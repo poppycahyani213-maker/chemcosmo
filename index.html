@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChemCosmo — Kimia Organik Berkonteks Socio-scientific Issues</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════════════════════════
+   THEME TOKENS
+════════════════════════════════════════ */
+:root,[data-theme="dark"]{
+  --bg:#0d0f14;--bg2:#13161e;--bg3:#1a1e2a;
+  --surface:#1f2535;--surface2:#252c3f;
+  --border:#2e3650;
+  --accent:#c8a96e;--accent2:#e8c98e;--accent3:#7eb8c8;
+  --green:#6ec87e;--red:#c86e6e;--purple:#a87ec8;
+  --text:#e8e4dc;--text2:#a8a4a0;--text3:#6e6c68;
+  --shadow:0 4px 24px rgba(0,0,0,.45);
+  --glow:0 0 40px rgba(200,169,110,.12);
+  --theme-icon:"🌙";
+}
+[data-theme="light"]{
+  --bg:#f4f2ee;--bg2:#ffffff;--bg3:#f0ede8;
+  --surface:#e8e4de;--surface2:#ddd9d2;
+  --border:#ccc8c0;
+  --accent:#a07840;--accent2:#b88c50;--accent3:#3a8aaa;
+  --green:#2e8b3e;--red:#b03030;--purple:#7040a8;
+  --text:#1a1612;--text2:#4a4640;--text3:#8a8680;
+  --shadow:0 4px 24px rgba(0,0,0,.12);
+  --glow:0 0 40px rgba(160,120,64,.08);
+  --theme-icon:"☀️";
+}
+
+/* ════════════════════════════════════════
+   BASE
+════════════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{transition:background .25s,color .25s;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+.page{display:none;min-height:100vh;}
+.page.active{display:flex;flex-direction:column;}
+
+/* ════════════════════════════════════════
+   THEME TOGGLE BUTTON
+════════════════════════════════════════ */
+.theme-toggle{
+  position:fixed;top:16px;right:16px;z-index:9000;
+  width:42px;height:42px;border-radius:50%;border:1px solid var(--border);
+  background:var(--bg2);color:var(--text);font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow);transition:all .2s;
+}
+.theme-toggle:hover{border-color:var(--accent);transform:scale(1.08);}
+
+/* ════════════════════════════════════════
+   LANDING
+════════════════════════════════════════ */
+#page-landing{
+  background:radial-gradient(ellipse at 30% 20%,rgba(200,169,110,.09) 0%,transparent 55%),
+             radial-gradient(ellipse at 75% 85%,rgba(126,184,200,.07) 0%,transparent 55%),var(--bg);
+  align-items:center;justify-content:center;padding:40px 20px;position:relative;overflow:hidden;
+}
+#page-landing::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(circle at 1px 1px,rgba(200,169,110,.07) 1px,transparent 0);
+  background-size:38px 38px;}
+.landing-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;max-width:1080px;width:100%;position:relative;z-index:1;}
+.landing-hero{display:flex;flex-direction:column;justify-content:center;gap:22px;}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(200,169,110,.1);
+  border:1px solid rgba(200,169,110,.3);border-radius:100px;padding:5px 15px;
+  font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;width:fit-content;}
+.hero-title{font-family:'DM Serif Display',serif;font-size:clamp(30px,4.2vw,50px);line-height:1.1;}
+.hero-title span{font-style:italic;color:var(--accent);}
+.hero-subtitle{font-size:14px;color:var(--text2);line-height:1.75;max-width:400px;}
+.hero-tags{display:flex;flex-wrap:wrap;gap:7px;}
+.hero-tag{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:3px 11px;
+  font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;}
+
+/* ════════════════════════════════════════
+   LOGIN PANEL
+════════════════════════════════════════ */
+.login-panel{background:var(--bg2);border:1px solid var(--border);border-radius:20px;
+  padding:38px;position:relative;box-shadow:var(--shadow),var(--glow);}
+.login-panel::before{content:'';position:absolute;top:-1px;left:18px;right:18px;height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);border-radius:100px;}
+.mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--bg3);
+  border-radius:9px;padding:4px;margin-bottom:26px;}
+.mode-tab{padding:9px;border:none;border-radius:7px;background:transparent;color:var(--text3);
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:.2s;
+  display:flex;align-items:center;justify-content:center;gap:6px;}
+.mode-tab.active{background:var(--surface2);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.18);}
+.form-sec{display:none;}.form-sec.active{display:block;}
+.form-group{margin-bottom:15px;}
+.form-label{display:block;font-size:11px;font-weight:700;color:var(--text3);
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+.form-input,.form-select{width:100%;background:var(--bg3);border:1px solid var(--border);
+  border-radius:12px;padding:11px 14px;color:var(--text);font-family:'DM Sans',sans-serif;
+  font-size:14px;outline:none;transition:.2s;appearance:none;}
+.form-input:focus,.form-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(200,169,110,.1);}
+.form-input::placeholder{color:var(--text3);}
+.form-select option{background:var(--bg3);}
+.btn-login{width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:none;border-radius:12px;color:#1a1208;font-family:'DM Sans',sans-serif;
+  font-size:15px;font-weight:700;cursor:pointer;transition:.2s;margin-top:4px;}
+.btn-login:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(200,169,110,.3);}
+
+/* ════════════════════════════════════════
+   APP SHELL
+════════════════════════════════════════ */
+.app-wrapper{display:flex;min-height:100vh;}
+.sidebar{width:258px;min-width:258px;background:var(--bg2);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto;
+  transition:background .25s,border-color .25s;}
+.sidebar-logo{padding:20px 22px 16px;border-bottom:1px solid var(--border);}
+.sidebar-logo .logo-text{font-family:'DM Serif Display',serif;font-size:20px;color:var(--accent);}
+.sidebar-logo .logo-sub{font-size:10px;color:var(--text3);margin-top:2px;}
+.sidebar-user{padding:13px 20px;border-bottom:1px solid var(--border);background:var(--bg3);}
+.sidebar-user .uname{font-size:13px;font-weight:600;color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sidebar-user .urole{font-size:11px;color:var(--accent);margin-top:2px;
+  text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
+.sidebar-nav{padding:12px 9px;flex:1;}
+.nav-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;
+  letter-spacing:.1em;padding:0 11px;margin-bottom:4px;margin-top:12px;}
+.nav-item{display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:7px;cursor:pointer;
+  transition:.15s;font-size:13px;font-weight:500;color:var(--text2);border:none;background:transparent;width:100%;text-align:left;}
+.nav-item:hover{background:var(--surface);color:var(--text);}
+.nav-item.active{background:rgba(200,169,110,.12);color:var(--accent);}
+[data-theme="light"] .nav-item.active{background:rgba(160,120,64,.1);}
+.nav-item .ni{font-size:15px;min-width:19px;}
+.sidebar-bottom{padding:12px 9px;border-top:1px solid var(--border);}
+.btn-logout{display:flex;align-items:center;gap:7px;padding:9px 11px;border-radius:7px;cursor:pointer;
+  font-size:13px;font-weight:500;color:var(--text3);border:none;background:transparent;width:100%;transition:.15s;}
+.btn-logout:hover{background:rgba(200,110,110,.1);color:var(--red);}
+.main-content{margin-left:258px;flex:1;padding:28px 32px;max-width:calc(100% - 258px);}
+.page-hdr{margin-bottom:26px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.page-hdr h1{font-family:'DM Serif Display',serif;font-size:25px;color:var(--text);line-height:1.2;}
+.page-hdr .sub{font-size:13px;color:var(--text2);margin-top:3px;}
+
+/* ════════════════════════════════════════
+   CARDS & GRID
+════════════════════════════════════════ */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:24px;
+  transition:background .25s,border-color .25s;}
+.card-title{font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:13px;color:var(--text);}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.mb4{margin-bottom:16px;}.mb5{margin-bottom:20px;}.mb6{margin-bottom:24px;}
+
+/* STAT CARDS */
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;
+  padding:20px;position:relative;overflow:hidden;transition:background .25s,border-color .25s;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),transparent);}
+.stat-icon{font-size:24px;margin-bottom:9px;}
+.stat-val{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text);line-height:1;}
+.stat-lbl{font-size:11px;color:var(--text3);margin-top:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
+
+/* PROGRESS RING */
+.prog-wrap{display:flex;align-items:center;gap:26px;background:var(--bg2);border:1px solid var(--border);
+  border-radius:20px;padding:24px;margin-bottom:18px;transition:background .25s,border-color .25s;}
+.prog-ring{position:relative;}
+.prog-ring svg{transform:rotate(-90deg);}
+.prt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.prt .pct{font-family:'DM Serif Display',serif;font-size:24px;color:var(--accent);line-height:1;}
+.prt .pct-l{font-size:10px;color:var(--text3);margin-top:1px;}
+.prog-info h3{font-family:'DM Serif Display',serif;font-size:19px;margin-bottom:5px;}
+.prog-info p{font-size:13px;color:var(--text2);line-height:1.65;}
+.prog-steps{margin-top:12px;display:flex;flex-direction:column;gap:6px;}
+.prog-step{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--border);min-width:7px;}
+.sdot.done{background:var(--green);}.sdot.active{background:var(--accent);box-shadow:0 0 6px var(--accent);}
+
+/* ════════════════════════════════════════
+   PENDAHULUAN
+════════════════════════════════════════ */
+.obj-item{display:flex;gap:13px;align-items:flex-start;padding:13px 17px;background:var(--bg3);
+  border:1px solid var(--border);border-radius:12px;transition:.2s;margin-bottom:9px;}
+.obj-item:hover{border-color:rgba(200,169,110,.35);}
+.obj-num{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--accent);
+  min-width:25px;background:rgba(200,169,110,.1);border-radius:5px;padding:2px 5px;text-align:center;}
+.obj-txt{font-size:13px;color:var(--text2);line-height:1.65;}
+.guide-row{display:flex;gap:13px;align-items:flex-start;padding:14px 18px;background:var(--bg3);
+  border:1px solid var(--border);border-radius:12px;margin-bottom:9px;}
+.guide-row .gi{font-size:18px;min-width:24px;}
+.guide-row h4{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.guide-row p{font-size:12px;color:var(--text2);line-height:1.6;}
+.btn-mulai{display:inline-flex;align-items:center;gap:9px;padding:13px 30px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;
+  color:#1a1208;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:.25s;margin-top:18px;}
+.btn-mulai:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(200,169,110,.35);}
+
+/* ════════════════════════════════════════
+   BAHAN AJAR
+════════════════════════════════════════ */
+.ba-section{background:var(--bg2);border:1px solid var(--border);border-radius:20px;
+  overflow:hidden;margin-bottom:16px;transition:background .25s,border-color .25s;}
+.ba-hdr{display:flex;align-items:center;gap:10px;padding:16px 22px;cursor:pointer;
+  border-bottom:1px solid transparent;transition:.2s;}
+.ba-hdr:hover{background:var(--bg3);}
+.ba-hdr.open{border-bottom-color:var(--border);}
+.ba-hdr h3{font-family:'DM Serif Display',serif;font-size:17px;color:var(--text);flex:1;}
+.ba-hdr .bai{font-size:20px;}
+.ba-hdr .bac{color:var(--text3);font-size:13px;transition:.2s;}
+.ba-hdr.open .bac{transform:rotate(180deg);}
+.ba-body{display:none;padding:22px;}
+.ba-body.open{display:block;}
+.mat-block{background:var(--bg3);border:1px solid var(--border);border-radius:12px;
+  padding:18px;margin-bottom:12px;transition:background .25s,border-color .25s;}
+.mat-block h4{font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px;}
+.mat-block p,.mat-block li{font-size:13px;color:var(--text2);line-height:1.75;}
+.mat-block ul,.mat-block ol{padding-left:18px;}
+.mat-block li{margin-bottom:5px;}
+.mat-block table{width:100%;border-collapse:collapse;margin-top:10px;font-size:12px;}
+.mat-block th{background:rgba(200,169,110,.08);padding:8px 10px;border:1px solid var(--border);
+  color:var(--accent);font-size:11px;font-weight:700;text-align:left;}
+.mat-block td{padding:7px 10px;border:1px solid var(--border);color:var(--text2);vertical-align:top;}
+.mat-block tr:nth-child(even) td{background:rgba(0,0,0,.03);}
+[data-theme="dark"] .mat-block tr:nth-child(even) td{background:rgba(255,255,255,.02);}
+.chem{font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(126,184,200,.1);
+  border:1px solid rgba(126,184,200,.2);border-radius:3px;padding:1px 5px;color:var(--accent3);}
+.hl-box{background:rgba(200,169,110,.06);border:1px solid rgba(200,169,110,.2);
+  border-radius:12px;padding:13px 17px;margin:10px 0;font-size:13px;color:var(--text2);line-height:1.7;}
+.hl-box strong{color:var(--accent);}
+.rxn-box{background:var(--bg2);border:1px solid rgba(126,184,200,.25);border-radius:8px;
+  padding:12px 16px;margin:8px 0;font-family:'JetBrains Mono',monospace;font-size:12px;
+  color:var(--accent3);line-height:1.8;}
+
+/* ════════════════════════════════════════
+   PBL TIMELINE
+════════════════════════════════════════ */
+.pbl-timeline{display:flex;flex-direction:column;}
+.pbl-step{display:flex;gap:16px;position:relative;}
+.pbl-step:not(:last-child)::after{content:'';position:absolute;left:17px;top:42px;
+  bottom:-14px;width:2px;background:var(--border);}
+.pbl-step.done::after{background:var(--green);}
+.step-ind{width:36px;height:36px;min-width:36px;border-radius:50%;border:2px solid var(--border);
+  background:var(--bg2);display:flex;align-items:center;justify-content:center;
+  font-size:14px;position:relative;z-index:1;transition:.3s;}
+.pbl-step.done .step-ind{border-color:var(--green);background:rgba(110,200,126,.1);}
+.pbl-step.active .step-ind{border-color:var(--accent);background:rgba(200,169,110,.1);
+  box-shadow:0 0 14px rgba(200,169,110,.3);}
+.step-content{flex:1;padding-bottom:22px;}
+.step-hdr{display:flex;align-items:center;gap:9px;margin-bottom:9px;cursor:pointer;flex-wrap:wrap;}
+.step-phase{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--accent);background:rgba(200,169,110,.1);border-radius:4px;padding:3px 7px;}
+.step-title-txt{font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);}
+.done-badge{margin-left:auto;font-size:11px;font-weight:600;color:var(--green);}
+.step-body{background:var(--bg3);border:1px solid var(--border);border-radius:12px;
+  overflow:hidden;display:none;transition:background .25s;}
+.step-body.open{display:block;}
+.step-body-inner{padding:18px 20px;}
+.step-desc{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:14px;}
+.step-actions{display:flex;align-items:center;gap:10px;padding:13px 20px;
+  border-top:1px solid var(--border);background:var(--bg2);flex-wrap:wrap;transition:background .25s;}
+.btn-complete{display:flex;align-items:center;gap:7px;padding:9px 18px;
+  background:linear-gradient(135deg,var(--green),#5ab06a);border:none;border-radius:12px;
+  color:#0d1a10;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:.2s;}
+.btn-complete:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(110,200,126,.3);}
+.btn-complete:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+.btn-sec{padding:9px 16px;border:1px solid var(--border);border-radius:12px;background:transparent;
+  color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:.2s;}
+.btn-sec:hover{border-color:var(--accent);color:var(--accent);}
+
+/* LKPD */
+.lkpd-block{background:var(--bg2);border:1px solid rgba(126,184,200,.3);border-radius:12px;
+  padding:18px;margin-bottom:12px;transition:background .25s;}
+.lkpd-block h4{font-size:13px;font-weight:700;color:var(--accent3);margin-bottom:12px;}
+.lkpd-scenario{background:var(--bg3);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;
+  padding:13px 17px;margin-bottom:13px;font-size:13px;color:var(--text2);line-height:1.75;}
+.lkpd-q{background:var(--bg3);border-radius:8px;padding:13px;margin-bottom:10px;}
+.lkpd-q p{font-size:13px;color:var(--text2);margin-bottom:7px;line-height:1.6;}
+.lkpd-ans{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:6px;
+  padding:9px 11px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;
+  resize:vertical;min-height:72px;outline:none;transition:border-color .2s;}
+.lkpd-ans:focus{border-color:var(--accent3);}
+.lkpd-ans.short{min-height:38px;resize:none;}
+.lkpd-table{width:100%;border-collapse:collapse;font-size:12px;margin:10px 0;}
+.lkpd-table th{background:rgba(126,184,200,.1);padding:7px 9px;border:1px solid rgba(126,184,200,.2);
+  color:var(--accent3);font-size:10px;font-weight:700;text-align:left;}
+.lkpd-table td{padding:5px 7px;border:1px solid var(--border);vertical-align:middle;}
+.lkpd-table td input{width:100%;background:transparent;border:none;color:var(--text2);
+  font-family:'DM Sans',sans-serif;font-size:12px;outline:none;padding:2px;}
+
+/* UPLOAD KARYA */
+.upload-zone{border:2px dashed var(--border);border-radius:20px;padding:38px 24px;
+  text-align:center;cursor:pointer;transition:.25s;background:var(--bg3);position:relative;}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:rgba(200,169,110,.04);}
+.upload-zone .uz-icon{font-size:46px;margin-bottom:13px;}
+.upload-zone h3{font-size:16px;font-weight:600;color:var(--text);margin-bottom:5px;}
+.upload-zone p{font-size:13px;color:var(--text2);}
+.upload-zone .uz-hint{font-size:11px;color:var(--text3);margin-top:7px;}
+.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.uploaded-item{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--bg3);
+  border:1px solid var(--border);border-radius:12px;margin-top:12px;transition:.2s;}
+.uploaded-item:hover{border-color:var(--accent);}
+.uploaded-item .ui-icon{font-size:30px;}
+.uploaded-item .ui-info{flex:1;min-width:0;}
+.uploaded-item .ui-name{font-size:13px;font-weight:600;color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.uploaded-item .ui-meta{font-size:11px;color:var(--text3);margin-top:3px;}
+.uploaded-item .ui-prev{max-width:72px;max-height:56px;border-radius:6px;object-fit:cover;}
+.btn-del{padding:5px 11px;border:1px solid rgba(200,110,110,.3);border-radius:6px;
+  background:transparent;color:var(--red);font-size:11px;font-weight:600;cursor:pointer;transition:.15s;}
+.btn-del:hover{background:rgba(200,110,110,.1);}
+.upload-ok{display:flex;align-items:center;gap:8px;padding:11px 15px;
+  background:rgba(110,200,126,.08);border:1px solid rgba(110,200,126,.3);
+  border-radius:12px;margin-top:12px;font-size:13px;color:var(--green);font-weight:500;}
+
+/* ════════════════════════════════════════
+   QUIZ
+════════════════════════════════════════ */
+.quiz-container{max-width:700px;}
+.quiz-q{background:var(--bg3);border:1px solid var(--border);border-radius:12px;
+  padding:17px 21px;margin-bottom:13px;transition:background .25s,border-color .25s;}
+.q-num{font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+.q-text{font-size:14px;color:var(--text);line-height:1.6;margin-bottom:11px;}
+.q-opts{display:flex;flex-direction:column;gap:7px;}
+.q-opt{display:flex;align-items:flex-start;gap:9px;padding:10px 13px;background:var(--bg2);
+  border:1px solid var(--border);border-radius:7px;cursor:pointer;transition:.15s;}
+.q-opt:hover{border-color:var(--accent);background:rgba(200,169,110,.05);}
+.q-opt input{margin-top:3px;flex-shrink:0;}
+.q-opt label{font-size:13px;color:var(--text2);cursor:pointer;line-height:1.5;}
+.q-opt.correct{border-color:var(--green);background:rgba(110,200,126,.1);}
+.q-opt.incorrect{border-color:var(--red);background:rgba(200,110,110,.1);}
+.quiz-result{background:var(--bg2);border:1px solid var(--border);border-radius:20px;
+  padding:32px;text-align:center;display:none;transition:background .25s;}
+.quiz-result.show{display:block;}
+.quiz-score{font-family:'DM Serif Display',serif;font-size:52px;color:var(--accent);line-height:1;margin-bottom:6px;}
+
+/* ════════════════════════════════════════
+   GURU — STUDENT TABLE
+════════════════════════════════════════ */
+.stbl{width:100%;border-collapse:collapse;}
+.stbl th{text-align:left;padding:10px 14px;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.06em;color:var(--text3);border-bottom:1px solid var(--border);}
+.stbl td{padding:12px 14px;font-size:13px;color:var(--text2);
+  border-bottom:1px solid var(--border);vertical-align:middle;}
+.stbl tr:hover td{background:var(--bg3);}
+.pb-mini{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;min-width:70px;}
+.pb-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .5s;}
+
+/* ════════════════════════════════════════
+   RICH TEXT EDITOR
+════════════════════════════════════════ */
+.rte-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:20px;
+  overflow:hidden;transition:background .25s,border-color .25s;}
+.rte-toolbar{display:flex;align-items:center;gap:4px;padding:9px 12px;
+  background:var(--bg3);border-bottom:1px solid var(--border);flex-wrap:wrap;transition:background .25s;}
+.rte-grp{display:flex;gap:2px;padding-right:8px;margin-right:4px;border-right:1px solid var(--border);}
+.rte-grp:last-child{border-right:none;}
+.rte-btn{width:30px;height:27px;border:none;border-radius:5px;background:transparent;
+  color:var(--text2);cursor:pointer;font-size:12px;font-weight:700;transition:.15s;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.rte-btn:hover{background:var(--surface);color:var(--text);}
+.rte-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.rte-sel{background:var(--bg3);border:1px solid var(--border);border-radius:5px;
+  color:var(--text2);font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 6px;outline:none;cursor:pointer;}
+.rte-img-btn{display:flex;align-items:center;gap:5px;padding:5px 10px;border:1px solid var(--border);
+  border-radius:5px;background:transparent;color:var(--text3);font-size:11px;font-weight:600;cursor:pointer;transition:.15s;}
+.rte-img-btn:hover{border-color:var(--accent3);color:var(--accent3);}
+.rte-area{min-height:280px;padding:20px 22px;color:var(--text2);font-family:'DM Sans',sans-serif;
+  font-size:14px;line-height:1.75;outline:none;}
+.rte-area img{max-width:100%;border-radius:7px;margin:7px 0;}
+.rte-footer{display:flex;align-items:center;justify-content:flex-end;gap:8px;
+  padding:11px 16px;border-top:1px solid var(--border);}
+.btn-save{display:flex;align-items:center;gap:7px;padding:9px 18px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;
+  color:#1a1208;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:.2s;}
+.btn-save:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(200,169,110,.3);}
+.edit-tabs{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap;}
+.edit-tab{padding:8px 14px;border:1px solid var(--border);border-radius:7px;background:var(--bg3);
+  color:var(--text3);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:.15s;}
+.edit-tab.active{background:rgba(200,169,110,.1);border-color:var(--accent);color:var(--accent);}
+[data-theme="light"] .edit-tab.active{background:rgba(160,120,64,.1);}
+
+/* ADD/DELETE BUTTONS */
+.btn-add{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;
+  border:1px dashed var(--accent);border-radius:8px;background:rgba(200,169,110,.05);
+  color:var(--accent);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;}
+.btn-add:hover{background:rgba(200,169,110,.12);}
+.btn-danger{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;
+  border:1px solid rgba(200,110,110,.3);border-radius:8px;background:transparent;
+  color:var(--red);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;}
+.btn-danger:hover{background:rgba(200,110,110,.1);}
+
+/* PREVIEW OVERLAY */
+.pv-bar{display:flex;align-items:center;gap:10px;padding:11px 22px;
+  background:rgba(200,169,110,.08);border-bottom:2px solid var(--accent);position:sticky;top:0;z-index:50;}
+.pv-badge{background:var(--accent);color:#1a1208;font-size:10px;font-weight:700;
+  border-radius:100px;padding:3px 9px;text-transform:uppercase;letter-spacing:.05em;}
+.btn-exit-pv{margin-left:auto;padding:7px 13px;border:1px solid var(--accent);border-radius:7px;
+  background:transparent;color:var(--accent);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;}
+.btn-exit-pv:hover{background:rgba(200,169,110,.1);}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;padding:12px 17px;font-size:13px;color:var(--text);box-shadow:var(--shadow);
+  z-index:9999;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);
+  display:flex;align-items:center;gap:8px;max-width:310px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{border-color:var(--green);}.toast.error{border-color:var(--red);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
+  z-index:800;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:20px;
+  padding:28px;max-width:480px;width:100%;box-shadow:var(--shadow);}
+.modal h3{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:18px;color:var(--text);}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;}
+
+.scroll-fade{animation:fadeUp .35s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+@media(max-width:860px){
+  .landing-grid{grid-template-columns:1fr;gap:26px;}
+  .sidebar{transform:translateX(-100%);}
+  .main-content{margin-left:0;max-width:100%;}
+  .g2,.g3{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- THEME TOGGLE -->
+<button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Ganti tema">🌙</button>
+
+<!-- ═══════════════════════════════════════ LANDING ═══ -->
+<div id="page-landing" class="page active">
+  <div class="landing-grid">
+    <div class="landing-hero scroll-fade">
+      <div class="hero-badge">⚗️ Media Pembelajaran Kimia</div>
+      <h1 class="hero-title">Kimia Organik<br>berkonteks <span>Socio-scientific Issues</span></h1>
+      <p class="hero-subtitle">Jelajahi isu sosial-ilmiah di balik senyawa organik pada produk kosmetik. Belajar kritis melalui Problem-Based Learning yang interaktif.</p>
+      <div class="hero-tags">
+        <span class="hero-tag">Alkohol</span><span class="hero-tag">Ester</span>
+        <span class="hero-tag">Gugus Fungsi</span><span class="hero-tag">PBL · SSI</span><span class="hero-tag">XII IPA</span>
+      </div>
+    </div>
+    <div class="login-panel scroll-fade">
+      <div class="mode-tabs">
+        <button class="mode-tab active" onclick="switchMode('siswa',this)">👨‍🎓 Mode Siswa</button>
+        <button class="mode-tab" onclick="switchMode('guru',this)">👩‍🏫 Mode Guru</button>
+      </div>
+      <!-- SISWA -->
+      <div class="form-sec active" id="form-siswa">
+        <div class="form-group"><label class="form-label">Nama Lengkap Siswa</label>
+          <input type="text" class="form-input" id="in-nama" placeholder="Masukkan nama lengkap..."></div>
+        <div class="form-group"><label class="form-label">Kelas</label>
+          <select class="form-select" id="in-kelas">
+            <option value="">Pilih kelas...</option>
+            <option>XII IPA 1</option><option>XII IPA 2</option><option>XII IPA 3</option>
+            <option>XII IPA 4</option><option>XII IPA 5</option>
+          </select></div>
+        <div class="form-group"><label class="form-label">Nomor Presensi</label>
+          <input type="number" class="form-input" id="in-presensi" placeholder="Contoh: 15" min="1" max="40"></div>
+        <div class="form-group"><label class="form-label">Nama Guru Pengajar</label>
+          <input type="text" class="form-input" id="in-guru-s" placeholder="Nama guru Kimia Anda..."></div>
+        <button class="btn-login" onclick="loginSiswa()">Mulai Belajar →</button>
+      </div>
+      <!-- GURU -->
+      <div class="form-sec" id="form-guru">
+        <div class="form-group"><label class="form-label">Nama Guru</label>
+          <input type="text" class="form-input" id="in-guru-nama" placeholder="Nama lengkap guru..."></div>
+        <div class="form-group"><label class="form-label">Password</label>
+          <input type="password" class="form-input" id="in-guru-pw" placeholder="••••••••"></div>
+        <button class="btn-login" onclick="loginGuru()" style="margin-top:4px;">Masuk Dashboard Guru →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ SISWA APP ═══ -->
+<div id="page-siswa" class="page">
+  <div class="app-wrapper">
+    <aside class="sidebar">
+      <div class="sidebar-logo"><div class="logo-text">ChemCosmo</div><div class="logo-sub">Media Pembelajaran Interaktif</div></div>
+      <div class="sidebar-user"><div class="uname" id="disp-nama">—</div><div class="urole" id="disp-info">Siswa</div></div>
+      <nav class="sidebar-nav">
+        <div class="nav-lbl">Menu Utama</div>
+        <button class="nav-item active" onclick="showSP('dashboard')" data-sp="dashboard"><span class="ni">🏠</span>Dashboard</button>
+        <button class="nav-item" onclick="showSP('pendahuluan')" data-sp="pendahuluan"><span class="ni">📖</span>Pendahuluan</button>
+        <button class="nav-item" onclick="showSP('bahan-ajar')" data-sp="bahan-ajar"><span class="ni">📚</span>Bahan Ajar</button>
+        <button class="nav-item" onclick="showSP('pembelajaran')" data-sp="pembelajaran"><span class="ni">🔬</span>Kegiatan Pembelajaran</button>
+        <button class="nav-item" onclick="showSP('asesmen')" data-sp="asesmen"><span class="ni">📝</span>Asesmen</button>
+      </nav>
+      <div class="sidebar-bottom"><button class="btn-logout" onclick="logout()">🚪 Keluar</button></div>
+    </aside>
+    <main class="main-content">
+      <!-- DASHBOARD -->
+      <div id="sp-dashboard" class="scroll-fade">
+        <div class="page-hdr"><div><h1>Selamat Datang! 👋</h1><div class="sub">Mari lanjutkan perjalanan belajarmu</div></div></div>
+        <div class="prog-wrap mb6">
+          <div class="prog-ring">
+            <svg width="108" height="108" viewBox="0 0 108 108">
+              <circle cx="54" cy="54" r="44" fill="none" stroke="var(--border)" stroke-width="7"/>
+              <circle id="prog-circle" cx="54" cy="54" r="44" fill="none" stroke="var(--accent)" stroke-width="7"
+                stroke-dasharray="277" stroke-dashoffset="277" stroke-linecap="round" style="transition:stroke-dashoffset 1s ease"/>
+            </svg>
+            <div class="prt"><div class="pct" id="pct-val">0%</div><div class="pct-l">Progres</div></div>
+          </div>
+          <div class="prog-info" style="flex:1;">
+            <h3>Progres Pembelajaran</h3>
+            <p>Kamu sedang belajar tentang <strong>Alkohol & Ester dalam Kosmetik</strong>. Jalani setiap sintaks PBL secara berurutan.</p>
+            <div class="prog-steps" id="prog-steps"></div>
+          </div>
+        </div>
+        <div class="g3 mb6">
+          <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-val" id="st-selesai">0</div><div class="stat-lbl">Sintaks Selesai</div></div>
+          <div class="stat-card"><div class="stat-icon">⏱️</div><div class="stat-val" id="st-total">5</div><div class="stat-lbl">Total Sintaks</div></div>
+          <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-val" id="st-skor">—</div><div class="stat-lbl">Skor Asesmen</div></div>
+        </div>
+        <div class="card"><div class="card-title">💡 Tips Belajar</div>
+          <p style="font-size:13px;color:var(--text2);line-height:1.75;">Baca <strong>Bahan Ajar</strong> terlebih dahulu sebelum memulai Kegiatan Pembelajaran. Hubungkan konsep gugus fungsi alkohol dan ester dengan produk kosmetik di sekitarmu!</p>
+        </div>
+      </div>
+      <!-- PENDAHULUAN -->
+      <div id="sp-pendahuluan" class="scroll-fade" style="display:none;">
+        <div class="page-hdr"><div><h1>📖 Pendahuluan</h1><div class="sub">Tujuan Pembelajaran & Petunjuk Penggunaan Media</div></div></div>
+        <div class="card mb5">
+          <div class="card-title">ℹ️ Informasi LKPD</div>
+          <div class="g2">
+            <div class="mat-block" style="margin-bottom:0"><h4>Topik</h4><p>Gugus fungsi: alkohol dan ester (sifat fisik dan kimia) dalam konteks keamanan kosmetik</p></div>
+            <div class="mat-block" style="margin-bottom:0"><h4>Alokasi Waktu</h4><p>4 JP (2 × 2 JP) — Pertemuan 1 & 2 dari 4 pertemuan</p></div>
+          </div>
+        </div>
+        <div class="card mb5">
+          <div class="card-title">🎯 Tujuan Pembelajaran</div>
+          <div class="obj-item"><span class="obj-num">01</span><span class="obj-txt">Siswa mampu <strong>mengidentifikasi kandungan senyawa organik</strong> yang umum terdapat dalam kosmetik.</span></div>
+          <div class="obj-item"><span class="obj-num">02</span><span class="obj-txt">Siswa mampu <strong>menganalisis struktur, gugus fungsi, dan tata nama</strong> senyawa organik seperti alkohol dan ester.</span></div>
+          <div class="obj-item"><span class="obj-num">03</span><span class="obj-txt">Siswa mampu <strong>mendeskripsikan sifat fisika dan kimia</strong> senyawa organik serta mengaitkannya dengan fungsi bahan kosmetik dalam konteks keamanan penggunaan.</span></div>
+          <div class="obj-item"><span class="obj-num">04</span><span class="obj-txt">Siswa menunjukkan <strong>sikap teliti, kritis, dan bertanggung jawab</strong> dalam menganalisis kandungan senyawa organik pada produk kosmetik.</span></div>
+          <div class="obj-item"><span class="obj-num">05</span><span class="obj-txt">Siswa menunjukkan <strong>kepedulian terhadap keamanan penggunaan kosmetik</strong> serta kesadaran memilih produk yang aman bagi kesehatan.</span></div>
+          <div class="obj-item"><span class="obj-num">06</span><span class="obj-txt">Siswa mampu <strong>menyusun hasil analisis</strong> dalam bentuk karya (poster, PPT, atau laporan) secara sistematis dan berbasis bukti ilmiah.</span></div>
+          <div class="obj-item"><span class="obj-num">07</span><span class="obj-txt">Siswa mampu <strong>mempresentasikan argumen ilmiah</strong> secara jelas, logis, dan bertanggung jawab terkait keamanan produk kosmetik.</span></div>
+        </div>
+        <div class="card mb5">
+          <div class="card-title">📋 Petunjuk Pengerjaan</div>
+          <div class="guide-row"><div class="gi">1️⃣</div><div><h4>Baca Bahan Ajar</h4><p>Kunjungi menu Bahan Ajar sebelum mengerjakan kegiatan pembelajaran.</p></div></div>
+          <div class="guide-row"><div class="gi">2️⃣</div><div><h4>Diskusikan Bersama Kelompok</h4><p>Kerjakan LKPD bersama kelompokmu (3–5 orang). Gunakan sumber referensi yang relevan.</p></div></div>
+          <div class="guide-row"><div class="gi">3️⃣</div><div><h4>Ikuti 5 Sintaks PBL</h4><p>Jalani setiap fase PBL secara berurutan dari Fase 1 hingga Fase 5.</p></div></div>
+          <div class="guide-row"><div class="gi">4️⃣</div><div><h4>Isi Jawaban di LKPD</h4><p>Tulis jawaban pada kolom yang tersedia. Hubungkan konsep kimia dengan isu kosmetik.</p></div></div>
+          <div class="guide-row"><div class="gi">5️⃣</div><div><h4>Unggah Karya di Fase 4</h4><p>Unggah hasil karya kelompok (poster/infografis) dalam format PDF atau foto.</p></div></div>
+          <div class="guide-row"><div class="gi">6️⃣</div><div><h4>Kerjakan Asesmen</h4><p>Setelah semua fase selesai, kerjakan asesmen untuk mengukur pemahamanmu.</p></div></div>
+          <button class="btn-mulai" onclick="showSP('bahan-ajar')">📚 Mulai dari Bahan Ajar →</button>
+        </div>
+      </div>
+      <!-- BAHAN AJAR -->
+      <div id="sp-bahan-ajar" class="scroll-fade" style="display:none;">
+        <div class="page-hdr"><div><h1>📚 Bahan Ajar</h1><div class="sub">Gugus Fungsi Senyawa Organik dalam Kosmetik</div></div></div>
+        <div id="ba-siswa"></div>
+        <div style="text-align:center;margin-top:8px;">
+          <button class="btn-mulai" onclick="showSP('pembelajaran')">🔬 Lanjut ke Kegiatan Pembelajaran →</button>
+        </div>
+      </div>
+      <!-- PEMBELAJARAN -->
+      <div id="sp-pembelajaran" class="scroll-fade" style="display:none;">
+        <div class="page-hdr">
+          <div><h1>🔬 Kegiatan Pembelajaran</h1><div class="sub">Problem-Based Learning — 5 Fase</div></div>
+          <div style="font-size:13px;color:var(--text3);">Progres: <span id="pbl-lbl" style="color:var(--accent);font-weight:700;">0/5</span></div>
+        </div>
+        <div class="pbl-timeline" id="pbl-container"></div>
+      </div>
+      <!-- ASESMEN -->
+      <div id="sp-asesmen" class="scroll-fade" style="display:none;">
+        <div class="page-hdr"><div><h1>📝 Asesmen</h1><div class="sub">Uji Pemahaman — Alkohol & Ester dalam Kosmetik</div></div></div>
+        <div class="quiz-container"><div id="quiz-form"></div>
+          <div class="quiz-result" id="quiz-result">
+            <div class="quiz-score" id="quiz-score">0/10</div>
+            <div style="font-size:15px;color:var(--text2);margin-bottom:6px;">Skor Asesmen Kamu</div>
+            <p style="font-size:13px;color:var(--text2);margin-bottom:20px;" id="quiz-fb"></p>
+            <button class="btn-sec" onclick="resetQuiz()">Ulangi Asesmen</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ GURU APP ═══ -->
+<div id="page-guru" class="page">
+  <div class="app-wrapper">
+    <aside class="sidebar">
+      <div class="sidebar-logo"><div class="logo-text">ChemCosmo</div><div class="logo-sub">Panel Guru</div></div>
+      <div class="sidebar-user"><div class="uname" id="disp-guru">—</div><div class="urole" style="color:var(--accent3);">Guru Kimia</div></div>
+      <nav class="sidebar-nav">
+        <div class="nav-lbl">Monitoring</div>
+        <button class="nav-item active" onclick="showGP('g-dash')" data-gp="g-dash"><span class="ni">🏠</span>Dashboard Guru</button>
+        <button class="nav-item" onclick="showGP('g-siswa')" data-gp="g-siswa"><span class="ni">👥</span>Data Siswa</button>
+        <button class="nav-item" onclick="showGP('g-karya')" data-gp="g-karya"><span class="ni">🎨</span>Karya Siswa</button>
+        <div class="nav-lbl">Preview</div>
+        <button class="nav-item" onclick="enterPreview()" data-gp="preview"><span class="ni">👁️</span>Lihat Mode Siswa</button>
+        <div class="nav-lbl">Editor Konten</div>
+        <button class="nav-item" onclick="showGP('edit-ba')" data-gp="edit-ba"><span class="ni">📚</span>Edit Bahan Ajar</button>
+        <button class="nav-item" onclick="showGP('edit-lkpd')" data-gp="edit-lkpd"><span class="ni">📋</span>Edit LKPD & Aktivitas</button>
+        <button class="nav-item" onclick="showGP('edit-quiz')" data-gp="edit-quiz"><span class="ni">📝</span>Edit Asesmen</button>
+      </nav>
+      <div class="sidebar-bottom"><button class="btn-logout" onclick="logout()">🚪 Keluar</button></div>
+    </aside>
+    <main class="main-content">
+      <div id="g-dash" class="scroll-fade">
+        <div class="page-hdr"><div><h1>Dashboard Guru 👩‍🏫</h1><div class="sub">Pantau progres siswa yang kamu ajar</div></div></div>
+        <div class="g3 mb6">
+          <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-val" id="g-total">0</div><div class="stat-lbl">Total Siswa</div></div>
+          <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-val" id="g-avg">0%</div><div class="stat-lbl">Rata-rata Progres</div></div>
+          <div class="stat-card"><div class="stat-icon">🎨</div><div class="stat-val" id="g-karya-ct">0</div><div class="stat-lbl">Karya Diunggah</div></div>
+        </div>
+        <div class="card"><div class="card-title">📌 Panduan</div>
+          <p style="font-size:13px;color:var(--text2);line-height:1.7;">Siswa yang memasukkan namamu saat login akan muncul di sini. Gunakan menu <strong>Data Siswa</strong> untuk melihat detail progres PBL, <strong>Karya Siswa</strong> untuk melihat unggahan, atau <strong>Lihat Mode Siswa</strong> untuk melihat tampilan dari perspektif siswa.</p>
+        </div>
+      </div>
+      <div id="g-siswa" style="display:none;" class="scroll-fade">
+        <div class="page-hdr"><div><h1>👥 Data Siswa</h1><div class="sub">Progres pembelajaran setiap siswa</div></div></div>
+        <div class="card"><div class="card-title">Daftar Siswa</div>
+          <div style="overflow-x:auto;"><table class="stbl">
+            <thead><tr><th>#</th><th>Nama</th><th>Kelas</th><th>No.</th><th>Progres PBL</th><th>Asesmen</th><th>Karya</th></tr></thead>
+            <tbody id="s-tbody"><tr><td colspan="7" style="text-align:center;color:var(--text3);padding:26px;">Belum ada siswa.</td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+      <div id="g-karya" style="display:none;" class="scroll-fade">
+        <div class="page-hdr"><div><h1>🎨 Karya Siswa</h1><div class="sub">Poster / Infografis yang diunggah siswa</div></div></div>
+        <div id="karya-grid"></div>
+      </div>
+      <div id="edit-ba" style="display:none;" class="scroll-fade">
+        <div class="page-hdr"><div><h1>📚 Edit Bahan Ajar</h1><div class="sub">Tambah / hapus topik, edit konten dengan rich-text editor</div></div></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+          <div class="edit-tabs" id="edit-ba-tabs" style="margin-bottom:0;flex:1;"></div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-add" onclick="openAddBAModal()">＋ Tambah Topik</button>
+            <button class="btn-danger" onclick="deleteBASection()" id="btn-del-ba">🗑 Hapus Topik</button>
+          </div>
+        </div>
+        <div id="edit-ba-content"></div>
+      </div>
+      <div id="edit-lkpd" style="display:none;" class="scroll-fade">
+        <div class="page-hdr"><div><h1>📋 Edit LKPD & Aktivitas</h1><div class="sub">Kelola fase, deskripsi, dan isi LKPD</div></div></div>
+        <div class="edit-tabs" id="edit-lkpd-tabs"></div>
+        <div id="edit-lkpd-content"></div>
+      </div>
+      <div id="edit-quiz" style="display:none;" class="scroll-fade">
+        <div class="page-hdr">
+          <div><h1>📝 Edit Asesmen</h1><div class="sub">Tambah, edit, atau hapus soal pilihan ganda</div></div>
+          <button class="btn-add" onclick="addQuestion()">＋ Tambah Soal</button>
+        </div>
+        <div id="edit-asesmen-content"></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- PREVIEW OVERLAY -->
+<div id="pv-overlay" style="display:none;position:fixed;inset:0;z-index:200;background:var(--bg);overflow-y:auto;">
+  <div class="pv-bar">
+    <span class="pv-badge">Preview</span>
+    <span style="font-size:13px;color:var(--accent);font-weight:600;">Tampilan Mode Siswa</span>
+    <button class="btn-exit-pv" onclick="exitPreview()">✕ Keluar Preview</button>
+  </div>
+  <div style="display:flex;">
+    <aside class="sidebar" style="position:relative;flex-shrink:0;">
+      <div class="sidebar-logo"><div class="logo-text">ChemCosmo</div><div class="logo-sub">Preview Mode</div></div>
+      <div class="sidebar-user"><div class="uname">Nama Siswa (Preview)</div><div class="urole">XII IPA X · No. 01</div></div>
+      <nav class="sidebar-nav">
+        <div class="nav-lbl">Menu Utama</div>
+        <button class="nav-item" onclick="showPV('pv-ba')" data-pv="pv-ba"><span class="ni">📚</span>Bahan Ajar</button>
+        <button class="nav-item active" onclick="showPV('pv-pbl')" data-pv="pv-pbl"><span class="ni">🔬</span>Kegiatan Pembelajaran</button>
+        <button class="nav-item" onclick="showPV('pv-quiz')" data-pv="pv-quiz"><span class="ni">📝</span>Asesmen</button>
+      </nav>
+    </aside>
+    <main class="main-content" style="margin-left:0;max-width:none;flex:1;">
+      <div id="pv-ba" style="display:none;"><div class="page-hdr"><h1>📚 Bahan Ajar (Preview)</h1></div><div id="pv-ba-content"></div></div>
+      <div id="pv-pbl"><div class="page-hdr"><div><h1>🔬 Kegiatan Pembelajaran (Preview)</h1></div></div><div class="pbl-timeline" id="pv-pbl-container"></div></div>
+      <div id="pv-quiz" style="display:none;"><div class="page-hdr"><h1>📝 Asesmen (Preview)</h1></div><div id="pv-quiz-content" class="quiz-container"></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- MODAL: Tambah Topik BA -->
+<div class="modal-overlay" id="modal-add-ba">
+  <div class="modal">
+    <h3>＋ Tambah Topik Bahan Ajar</h3>
+    <div class="form-group"><label class="form-label">Ikon (emoji)</label>
+      <input type="text" class="form-input" id="new-ba-icon" placeholder="Contoh: 🧪" maxlength="4"></div>
+    <div class="form-group"><label class="form-label">Judul Topik</label>
+      <input type="text" class="form-input" id="new-ba-title" placeholder="Contoh: Asam Karboksilat dalam Kosmetik"></div>
+    <div class="form-group" style="margin-bottom:0"><label class="form-label">Konten Awal (bisa diedit nanti)</label>
+      <textarea class="form-input" id="new-ba-html" style="min-height:80px;resize:vertical" placeholder="Ketik konten awal topik ini..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-sec" onclick="closeModal('modal-add-ba')">Batal</button>
+      <button class="btn-save" onclick="confirmAddBA()">＋ Tambah</button>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden inputs -->
+<input type="file" id="rte-img-input" accept="image/*" style="display:none;" onchange="handleRteImg(event)">
+<input type="file" accept="image/*,application/pdf" multiple style="display:none;" id="karya-file-input" onchange="handleKaryaSelect(event)">
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════
+let isDark = true;
+function toggleTheme() {
+  isDark = !isDark;
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.getElementById('theme-btn').textContent = isDark ? '🌙' : '☀️';
+  saveLS('cc_theme', isDark ? 'dark' : 'light');
+}
+
+// ═══════════════════════════════════════
+// STATE & STORAGE
+// ═══════════════════════════════════════
+let currentUser = null, studentLog = [], studentProgress = {}, karyaStore = {};
+let editBAStep = 0, editLKPDStep = 0, activeRteId = null;
+let uploadedFiles = [];
+
+function saveLS(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+function loadLS(k) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch(e){ return null; } }
+function today() { return new Date().toLocaleDateString('id-ID'); }
+
+// ── BAHAN AJAR DATA ──
+let baData = loadLS('cc_ba') || [
+  {
+    id:'alkohol', icon:'🍶', title:'Alkohol dalam Kosmetik',
+    html:`<div class="mat-block"><h4>Pengenalan Alkohol</h4><p>Alkohol adalah senyawa organik yang memiliki gugus hidroksil (–OH) yang terikat pada atom karbon jenuh (sp³).</p><br><table><tr><th>Nama Senyawa</th><th>Rumus Molekul</th><th>Gugus –OH</th><th>Fungsi dalam Kosmetik</th></tr><tr><td>Etanol</td><td><span class="chem">C₂H₅OH</span></td><td>–OH primer</td><td>Pelarut, pengawet, antiseptik</td></tr><tr><td>Isopropanol</td><td><span class="chem">C₃H₇OH</span></td><td>–OH sekunder</td><td>Pelarut, astringen</td></tr><tr><td>Gliserol</td><td><span class="chem">C₃H₈O₃</span></td><td>3 gugus –OH</td><td>Pelembab (humektan)</td></tr><tr><td>Setil alkohol</td><td><span class="chem">C₁₆H₃₃OH</span></td><td>–OH primer rantai panjang</td><td>Emolien, penstabil emulsi</td></tr><tr><td>Benzil alkohol</td><td><span class="chem">C₇H₈O</span></td><td>–OH benzil</td><td>Pengawet, pelarut parfum</td></tr></table></div><div class="mat-block"><h4>Klasifikasi Alkohol</h4><table><tr><th>Jenis</th><th>Ciri</th><th>Contoh</th><th>Dalam Kosmetik</th></tr><tr><td>Primer</td><td>–OH pada C yang mengikat 1 C lain</td><td>Etanol, Setil alkohol</td><td>Pelarut, pengawet</td></tr><tr><td>Sekunder</td><td>–OH pada C yang mengikat 2 C lain</td><td>Isopropanol</td><td>Astringen, emolien</td></tr><tr><td>Tersier</td><td>–OH pada C yang mengikat 3 C lain</td><td>t-Butil alkohol</td><td>Jarang digunakan</td></tr><tr><td>Poliol</td><td>Lebih dari satu gugus –OH</td><td>Gliserol, Propilen glikol</td><td>Pelembab, humektan</td></tr></table></div><div class="mat-block"><h4>Sifat Fisik Alkohol</h4><ul><li><strong>Titik Didih:</strong> Relatif tinggi dibanding alkana sejenis — akibat ikatan hidrogen</li><li><strong>Kelarutan:</strong> Alkohol rantai pendek larut baik dalam air; rantai panjang kurang larut</li><li><strong>Viskositas:</strong> Poliol lebih kental dari monol</li><li><strong>Bau:</strong> Rantai pendek berbau khas; rantai panjang hampir tidak berbau</li><li><strong>Wujud (25°C):</strong> C1–C11 cair; C12+ padat</li></ul></div><div class="mat-block"><h4>Sifat Kimia Alkohol</h4><p><strong>1. Oksidasi:</strong></p><div class="rxn-box">Alkohol primer → Aldehida → Asam Karboksilat<br>CH₃CH₂OH + [O] → CH₃CHO + [O] → CH₃COOH<br>Alkohol sekunder → Keton: CH₃CH(OH)CH₃ + [O] → CH₃COCH₃</div><p><strong>2. Esterifikasi:</strong></p><div class="rxn-box">Alkohol + Asam Karboksilat ⇌ Ester + Air (H₂SO₄)<br>CH₃OH + CH₃COOH ⇌ CH₃COOCH₃ + H₂O</div><p><strong>3. Dehidrasi:</strong></p><div class="rxn-box">170°C: CH₃CH₂OH → CH₂=CH₂ + H₂O (alkena)<br>140°C: 2C₂H₅OH → C₂H₅OC₂H₅ + H₂O (eter)</div></div>`
+  },
+  {
+    id:'ester', icon:'🌸', title:'Ester dalam Kosmetik',
+    html:`<div class="mat-block"><h4>Pengenalan Gugus Ester</h4><p>Ester adalah senyawa organik turunan asam karboksilat yang mengandung gugus fungsi <strong>–COO–</strong>. Terbentuk dari reaksi esterifikasi asam karboksilat dengan alkohol.</p><br><table><tr><th>Nama Senyawa</th><th>Rumus</th><th>Asal</th><th>Fungsi dalam Kosmetik</th></tr><tr><td>Etil asetat</td><td><span class="chem">CH₃COOC₂H₅</span></td><td>Asetat + Etanol</td><td>Pelarut cat kuku</td></tr><tr><td>Isoamil asetat</td><td><span class="chem">CH₃COOC₅H₁₁</span></td><td>Asetat + Isoamil alkohol</td><td>Aroma pisang, pewangi</td></tr><tr><td>Etil butirat</td><td><span class="chem">C₃H₇COOC₂H₅</span></td><td>Butirat + Etanol</td><td>Aroma nanas, parfum</td></tr><tr><td>Isopropil miristat</td><td><span class="chem">C₁₃H₂₇COOC₃H₇</span></td><td>Miristat + Isopropanol</td><td>Emolien, penyerap cepat</td></tr><tr><td>Oktil salisilat</td><td><span class="chem">C₆H₄(OH)COOC₈H₁₇</span></td><td>Salisilat + Oktanol</td><td>Filter UV dalam sunscreen</td></tr></table></div><div class="mat-block"><h4>Sifat Fisik Ester</h4><table><tr><th>Sifat</th><th>Karakteristik</th></tr><tr><td>Titik didih</td><td>Lebih rendah dari alkohol (massa molekul sama)</td></tr><tr><td>Kelarutan</td><td>Rantai pendek agak larut; rantai panjang tidak larut</td></tr><tr><td>Bau</td><td>Harum khas buah-buahan (rantai pendek–menengah)</td></tr><tr><td>Wujud (25°C)</td><td>Sebagian besar cair; beberapa padat (rantai panjang)</td></tr></table></div><div class="mat-block"><h4>Sifat Kimia Ester</h4><div class="rxn-box">1. Hidrolisis Asam (reversibel):<br>CH₃COOC₂H₅ + H₂O ⇌ CH₃COOH + C₂H₅OH<br><br>2. Saponifikasi (ireversibel):<br>CH₃COOC₂H₅ + NaOH → CH₃COONa + C₂H₅OH<br><br>3. Reduksi:<br>CH₃COOC₂H₅ + 2H₂ → CH₃CH₂OH + C₂H₅OH</div></div><div class="hl-box"><strong>💡 Tahukah Kamu?</strong> Saponifikasi lemak/minyak (ester) dengan NaOH menghasilkan sabun (garam asam lemak) + gliserol!</div>`
+  }
+];
+
+// ── PBL DATA (5 FASE) ──
+let pblData = loadLS('cc_pbl') || [
+  {
+    id:1, phase:'Fase 1', icon:'🎯', title:'Orientasi pada Masalah',
+    desc:'Siswa diorientasikan pada isu sosial-ilmiah: <em>"Kosmetik Terjangkau — Aman atau Berisiko?"</em> Guru menyajikan narasi kasus nyata tentang produk kosmetik yang berpotensi berbahaya. Siswa mendiskusikan pertanyaan pemantik secara kritis.',
+    lkpd:`<div class="lkpd-block"><h4>📋 LKPD Fase 1 — Orientasi Masalah</h4><div class="lkpd-scenario"><strong>Bacalah narasi berikut:</strong><br><br>Pasar kosmetik di Indonesia mengalami perkembangan pesat dengan hadirnya produk berharga terjangkau yang banyak diminati remaja. Namun, di balik kemudahannya, muncul pertanyaan penting mengenai keamanan bahan yang digunakan. Beberapa kasus menunjukkan produk kosmetik beredar dengan kandungan zat berpotensi membahayakan kesehatan.<br><br><strong>❓ Bagaimana cara kita mengidentifikasi dan memahami sifat senyawa kimia dalam kosmetik untuk menentukan apakah produk tersebut aman?</strong></div><div class="lkpd-q"><p><strong>Pertanyaan 1:</strong> Apa yang kamu ketahui tentang bahan kimia organik dalam kosmetik? Sebutkan minimal 2 contoh senyawa yang mungkin ada dalam produk kosmetik sehari-hari!</p><textarea class="lkpd-ans" id="f1q1" placeholder="Jawaban kelompokmu..."></textarea></div><div class="lkpd-q"><p><strong>Pertanyaan 2:</strong> Mengapa ada bahan kimia dalam kosmetik yang bisa berdampak buruk bagi kesehatan? Jelaskan dengan alasan yang logis!</p><textarea class="lkpd-ans" id="f1q2" placeholder="Jawaban kelompokmu..."></textarea></div><div class="lkpd-q"><p><strong>Pertanyaan 3:</strong> Mengapa penting memahami gugus fungsi dan sifat suatu senyawa organik sebelum menggunakannya dalam kosmetik?</p><textarea class="lkpd-ans" id="f1q3" placeholder="Jawaban kelompokmu..."></textarea></div></div>`
+  },
+  {
+    id:2, phase:'Fase 2', icon:'📚', title:'Mengorganisasi Siswa untuk Belajar',
+    desc:'Siswa membentuk kelompok (3–5 orang), mempelajari bahan ajar alkohol dan ester, serta mengerjakan aktivitas tata nama IUPAC dan analisis sifat fisik-kimia.',
+    lkpd:`<div class="lkpd-block"><h4>📋 LKPD Fase 2A — Tata Nama Alkohol (IUPAC)</h4><p style="font-size:13px;color:var(--text2);margin-bottom:10px;">Lengkapi tabel berikut dengan nama IUPAC yang tepat!</p><table class="lkpd-table"><tr><th>No.</th><th>Rumus Struktur</th><th>Nama IUPAC</th><th>Jenis Alkohol</th></tr><tr><td>1</td><td>CH₃–CH₂–OH</td><td><input placeholder="..."></td><td><input placeholder="..."></td></tr><tr><td>2</td><td>CH₃–CH(OH)–CH₃</td><td><input placeholder="..."></td><td><input placeholder="..."></td></tr><tr><td>3</td><td>CH₃–CH₂–CH₂–CH₂–OH</td><td><input placeholder="..."></td><td><input placeholder="..."></td></tr><tr><td>4</td><td>HOCH₂–CHOH–CH₂OH</td><td><input placeholder="..."></td><td><input placeholder="..."></td></tr><tr><td>5</td><td>CH₃–C(OH)(CH₃)–CH₃</td><td><input placeholder="..."></td><td><input placeholder="..."></td></tr></table></div><div class="lkpd-block"><h4>📋 LKPD Fase 2B — Sifat Fisik Alkohol</h4><table class="lkpd-table"><tr><th>Sifat Fisik</th><th>Karakteristik</th><th>Penjelasan (hubungan dengan gugus –OH)</th></tr><tr><td>Titik Didih</td><td>Relatif tinggi dibanding alkana sejenis</td><td><input placeholder="Jelaskan..."></td></tr><tr><td>Kelarutan</td><td>Rantai pendek larut; rantai panjang kurang larut</td><td><input placeholder="Jelaskan..."></td></tr><tr><td>Viskositas</td><td>Poliol lebih kental dari monol</td><td><input placeholder="Jelaskan..."></td></tr><tr><td>Bau</td><td>Rantai pendek berbau khas; rantai panjang tidak berbau</td><td><input placeholder="Jelaskan..."></td></tr><tr><td>Wujud (25°C)</td><td>C1–C11: cair; C12+: padat</td><td><input placeholder="Jelaskan..."></td></tr></table></div><div class="lkpd-block"><h4>📋 LKPD Fase 2C — Tata Nama Ester (IUPAC)</h4><table class="lkpd-table"><tr><th>No.</th><th>Rumus Struktur</th><th>Nama IUPAC</th></tr><tr><td>1</td><td>HCOOCH₃</td><td><input placeholder="..."></td></tr><tr><td>2</td><td>CH₃COOC₃H₇</td><td><input placeholder="..."></td></tr><tr><td>3</td><td>C₂H₅COOCH₃</td><td><input placeholder="..."></td></tr><tr><td>4</td><td>CH₃COOC₄H₉</td><td><input placeholder="..."></td></tr><tr><td>5</td><td>C₃H₇COOC₂H₅</td><td><input placeholder="..."></td></tr></table></div><div class="lkpd-block"><h4>📋 LKPD Fase 2D — Pertanyaan Analisis</h4><div class="lkpd-q"><p><strong>Q1:</strong> Mengapa etanol efektif sebagai pengawet dalam hand sanitizer? Jelaskan berdasarkan sifat fisik dan kimia etanol!</p><textarea class="lkpd-ans" id="f2q1" placeholder="Jawaban..."></textarea></div><div class="lkpd-q"><p><strong>Q2:</strong> Setil alkohol (C₁₆H₃₃OH) bersifat padat dan tidak larut dalam air. Bagaimana sifat ini membuatnya cocok sebagai emolien dalam pelembab?</p><textarea class="lkpd-ans" id="f2q2" placeholder="Jawaban..."></textarea></div><div class="lkpd-q"><p><strong>Q3:</strong> Jelaskan mengapa gliserol (propana-1,2,3-triol) efektif sebagai humektan berdasarkan strukturnya!</p><textarea class="lkpd-ans" id="f2q3" placeholder="Jawaban..."></textarea></div><div class="lkpd-q"><p><strong>Q4:</strong> Mengapa ester banyak digunakan sebagai pewangi dalam parfum? Hubungkan dengan sifat fisik ester!</p><textarea class="lkpd-ans" id="f2q4" placeholder="Jawaban..."></textarea></div><div class="lkpd-q"><p><strong>Q5:</strong> Tuliskan reaksi esterifikasi yang menghasilkan isopropil miristat!</p><textarea class="lkpd-ans" id="f2q5" placeholder="Reaksi: Asam ... + Alkohol ... → Ester ... + Air"></textarea></div></div>`
+  },
+  {
+    id:3, phase:'Fase 3', icon:'🔍', title:'Membimbing Penyelidikan',
+    desc:'Setiap kelompok memilih satu produk kosmetik dan melakukan penyelidikan mendalam: membaca komposisi label, mengidentifikasi senyawa alkohol dan ester, menganalisis fungsi dan keamanannya.',
+    lkpd:`<div class="lkpd-block"><h4>📋 LKPD Fase 3 — Kegiatan Penyelidikan Produk Kosmetik</h4><div class="lkpd-scenario">🔍 <strong>Panduan Penyelidikan:</strong><br><strong>1.</strong> Pilih satu produk kosmetik (pelembab, sabun, shampo, parfum, dll.)<br><strong>2.</strong> Baca komposisi bahan pada kemasan produk.<br><strong>3.</strong> Identifikasi senyawa yang termasuk alkohol dan ester.<br><strong>4.</strong> Cari informasi fungsi masing-masing bahan.<br><strong>5.</strong> Evaluasi keamanan produk berdasarkan analisis kimia.</div><div class="lkpd-q"><p><strong>Identitas Produk:</strong></p><p>Nama Produk:</p><textarea class="lkpd-ans short" id="f3-nama" placeholder="Tuliskan nama produk..."></textarea><p style="margin-top:8px;">Jenis Produk:</p><textarea class="lkpd-ans short" id="f3-jenis" placeholder="Pelembab / Parfum / Sabun / dll."></textarea></div><div class="lkpd-q"><p><strong>Tabel Hasil Analisis:</strong></p><table class="lkpd-table"><tr><th>No.</th><th>Nama Bahan (Label)</th><th>Golongan</th><th>Gugus Fungsi</th><th>Fungsi dalam Produk</th><th>Aman / Perlu Diperiksa</th></tr><tr><td>1</td><td><input placeholder="..."></td><td><input placeholder="Alkohol/Ester"></td><td><input placeholder="–OH/–COO–"></td><td><input placeholder="..."></td><td><input placeholder="..."></td></tr><tr><td>2</td><td><input placeholder="..."></td><td><input placeholder="..."></td><td><input placeholder="..."></td><td><input placeholder="..."></td><td><input placeholder="..."></td></tr><tr><td>3</td><td><input placeholder="..."></td><td><input placeholder="..."></td><td><input placeholder="..."></td><td><input placeholder="..."></td><td><input placeholder="..."></td></tr><tr><td>4</td><td><input placeholder="..."></td><td><input placeholder="..."></td><td><input placeholder="..."></td><td><input placeholder="..."></td><td><input placeholder="..."></td></tr><tr><td>5</td><td><input placeholder="..."></td><td><input placeholder="..."></td><td><input placeholder="..."></td><td><input placeholder="..."></td><td><input placeholder="..."></td></tr><tr><td>6</td><td><input placeholder="..."></td><td><input placeholder="..."></td><td><input placeholder="..."></td><td><input placeholder="..."></td><td><input placeholder="..."></td></tr></table></div><div class="lkpd-q"><p><strong>Kesimpulan Penyelidikan:</strong> Kaitkan antara komposisi bahan, fungsi senyawa, dan tingkat keamanan produk!</p><textarea class="lkpd-ans" id="f3-kesimpulan" placeholder="Berdasarkan penyelidikan, kami menyimpulkan bahwa..." style="min-height:90px;"></textarea></div></div>`
+  },
+  {
+    id:4, phase:'Fase 4', icon:'🎨', title:'Mengembangkan & Menyajikan Hasil Karya',
+    desc:'Kelompok menyusun hasil investigasi menjadi poster atau infografis edukatif, lalu mempresentasikannya dan memajangnya dalam kegiatan <em>Gallery Walk</em>.',
+    lkpd:`<div class="lkpd-block"><h4>📋 LKPD Fase 4 — Mengembangkan & Menyajikan Hasil Karya</h4><div class="lkpd-scenario">🎨 <strong>Tugas Kelompok:</strong><br>Buat <strong>poster atau infografis edukatif</strong> yang memuat:<br>• Hubungan gugus fungsi, sifat fisik dan kimia senyawa<br>• Dampaknya terhadap kesehatan<br>• Bahasa singkat, jelas, dan menarik<br><br>Setelah selesai, <strong>presentasikan</strong> di depan kelas dan pajang dalam <strong>Gallery Walk</strong>.</div><div class="lkpd-q"><p><strong>Rancangan Karya:</strong></p><p>Jenis Karya:</p><select class="lkpd-ans short" id="f4-jenis" style="height:40px;min-height:unset;resize:none;"><option value="">-- Pilih --</option><option>Poster</option><option>Infografis Digital</option><option>Presentasi PPT</option><option>Laporan Singkat</option></select><p style="margin-top:10px;">Judul & Kerangka Isi:</p><textarea class="lkpd-ans" id="f4-outline" placeholder="Judul: ...\nPoint 1: ...\nPoint 2: ..."></textarea></div><div class="lkpd-q"><p><strong>Argumen Ilmiah Utama:</strong> Apa argumen utama terkait keamanan produk kosmetik yang diteliti?</p><textarea class="lkpd-ans" id="f4-argumen" placeholder="Argumen: ...\nBukti: ...\nKesimpulan: ..."></textarea></div></div>
+<div class="lkpd-block" style="border-color:rgba(168,126,200,.3);">
+  <h4 style="color:var(--purple);">🖼️ Unggah Hasil Karya Kelompok</h4>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:14px;">Unggah file karya dalam format <strong>PDF</strong> atau <strong>foto</strong>. Maksimal 3 file.</p>
+  <div class="upload-zone" id="upload-zone" ondragover="handleDrag(event,true)" ondragleave="handleDrag(event,false)" ondrop="handleDrop(event)">
+    <input type="file" accept="image/*,application/pdf" multiple onchange="handleKaryaSelect(event)">
+    <div class="uz-icon">📤</div>
+    <h3>Klik atau Seret File ke Sini</h3>
+    <p>Poster, infografis, atau laporan kelompok</p>
+    <div class="uz-hint">Format: PDF, PNG, JPG · Maks. 3 file</div>
+  </div>
+  <div id="uploaded-list"></div>
+  <div id="upload-ok" style="display:none;" class="upload-ok">✅ Karya berhasil diunggah! Guru dapat melihatnya di menu Karya Siswa.</div>
+</div>
+<div class="lkpd-block"><h4>📋 Refleksi</h4><div class="lkpd-q"><p><strong>Tiga hal terpenting yang kamu pelajari:</strong></p><textarea class="lkpd-ans" id="f4-refleksi" placeholder="1. ...\n2. ...\n3. ..."></textarea></div><div class="lkpd-q"><p><strong>Perubahan Perilaku:</strong> Bagaimana pengetahuan ini mengubah cara kamu memilih kosmetik?</p><textarea class="lkpd-ans" id="f4-perubahan" placeholder="Ke depannya saya akan..."></textarea></div></div>`
+  },
+  {
+    id:5, phase:'Fase 5', icon:'🔄', title:'Analisis & Evaluasi Proses Pemecahan Masalah',
+    desc:'Guru dan siswa bersama mengevaluasi proses pembelajaran secara keseluruhan. Siswa merefleksikan pemahaman baru tentang senyawa organik dalam kosmetik, mengevaluasi kualitas argumen ilmiah yang dibangun, dan menyimpulkan isu sosial-ilmiah yang telah dipelajari.',
+    lkpd:`<div class="lkpd-block"><h4>📋 LKPD Fase 5 — Evaluasi & Refleksi Akhir</h4><div class="lkpd-scenario">🔄 Pada fase ini, kamu akan mengevaluasi seluruh proses pembelajaran yang telah dilalui. Renungkan kembali pertanyaan awal: <strong>"Kosmetik Terjangkau — Aman atau Berisiko?"</strong> dan bandingkan dengan pemahamanmu sekarang.</div><div class="lkpd-q"><p><strong>Evaluasi Argumen Ilmiah:</strong> Bandingkan jawaban kamu di Fase 1 (Orientasi Masalah) dengan pemahamanmu sekarang. Apa yang berubah dari cara kamu memandang isu keamanan kosmetik?</p><textarea class="lkpd-ans" id="f5q1" placeholder="Di awal saya berpikir... Namun sekarang saya memahami bahwa..."></textarea></div><div class="lkpd-q"><p><strong>Evaluasi Diri (nilai 1–10):</strong> Nilai kemampuanmu dalam aspek berikut dan berikan alasan!</p><table class="lkpd-table"><tr><th>Aspek</th><th>Nilai (1–10)</th><th>Alasan</th></tr><tr><td>Pemahaman konsep alkohol & ester</td><td><input placeholder="..."></td><td><input placeholder="Alasan..."></td></tr><tr><td>Kemampuan analisis sifat senyawa</td><td><input placeholder="..."></td><td><input placeholder="Alasan..."></td></tr><tr><td>Kemampuan berargumen ilmiah</td><td><input placeholder="..."></td><td><input placeholder="Alasan..."></td></tr><tr><td>Kerja sama kelompok</td><td><input placeholder="..."></td><td><input placeholder="Alasan..."></td></tr></table></div><div class="lkpd-q"><p><strong>Kesimpulan Akhir:</strong> Tuliskan kesimpulan kelompokmu secara menyeluruh tentang isu kosmetik terjangkau dari perspektif kimia organik!</p><textarea class="lkpd-ans" id="f5q2" placeholder="Berdasarkan seluruh proses pembelajaran, kami menyimpulkan bahwa..." style="min-height:100px;"></textarea></div><div class="lkpd-q"><p><strong>Pesan untuk Konsumen:</strong> Tuliskan 3 saran praktis untuk konsumen remaja dalam memilih produk kosmetik yang aman berdasarkan analisis kimia!</p><textarea class="lkpd-ans" id="f5q3" placeholder="1. ...\n2. ...\n3. ..."></textarea></div></div>`
+  }
+];
+
+// ── QUIZ DATA ──
+let quizData = loadLS('cc_quiz') || [
+  {q:"Alkohol primer adalah alkohol dengan gugus –OH terikat pada karbon yang mengikat...",options:["3 karbon lain","2 karbon lain","1 karbon lain","0 karbon lain"],answer:2},
+  {q:"Senyawa <strong>CH₃COOC₂H₅</strong> (etil asetat) berfungsi sebagai...",options:["Humektan pelembab","Pelarut cat kuku","Filter UV","Pengawet antibakteri"],answer:1},
+  {q:"Gliserol efektif sebagai humektan karena...",options:["Rantai karbon panjang","Memiliki 3 gugus –OH polar yang mengikat air","Bersifat asam kuat","Tidak larut dalam air"],answer:1},
+  {q:"Reaksi pembentukan ester dari asam karboksilat + alkohol (katalis H₂SO₄) disebut...",options:["Hidrolisis","Saponifikasi","Esterifikasi","Oksidasi"],answer:2},
+  {q:"Etanol efektif sebagai antiseptik karena...",options:["Titik didihnya sangat tinggi","Dapat mendenaturasi protein bakteri dan bersifat pelarut polar","Tidak larut dalam air","Memiliki aroma khas"],answer:1},
+  {q:"Setil alkohol (C₁₆H₃₃OH) bersifat padat pada suhu kamar karena...",options:["Memiliki gugus –OH sekunder","Rantai hidrokarbon C16 panjang yang mendominasi sifat nonpolar","Memiliki 3 gugus –OH","Bersifat asam kuat"],answer:1},
+  {q:"Senyawa yang digunakan sebagai filter UV dalam sunscreen adalah...",options:["Etil asetat","Gliserol","Oktil salisilat","Isopropanol"],answer:2},
+  {q:"Hidrolisis basa (saponifikasi) ester menghasilkan...",options:["Asam karboksilat + alkohol","Garam karboksilat (sabun) + alkohol","2 alkohol + air","Alkena + air"],answer:1},
+  {q:"Isopropil miristat digunakan dalam krim karena...",options:["Memiliki aroma buah","Mudah diserap kulit dan berperan sebagai emolien","Larut sempurna dalam air","Bersifat antiseptik kuat"],answer:1},
+  {q:"Cara terbaik mengetahui kandungan senyawa organik dalam kosmetik adalah...",options:["Mencium aromanya","Melihat warnanya","Membaca daftar bahan (INCI) pada label produk","Merasakan teksturnya"],answer:2}
+];
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  try { studentLog = JSON.parse(localStorage.getItem('cc_students') || '[]'); } catch(e){}
+  try { karyaStore = JSON.parse(localStorage.getItem('cc_karya') || '{}'); } catch(e){}
+  const savedTheme = loadLS('cc_theme');
+  if (savedTheme === 'light') { isDark = false; document.documentElement.setAttribute('data-theme','light'); document.getElementById('theme-btn').textContent = '☀️'; }
+  // Inject RTE styles
+  const s = document.createElement('style');
+  s.textContent = `.rte-area h3{font-family:'DM Serif Display',serif;font-size:17px;color:var(--text);margin:11px 0 7px;}
+    .rte-area h4{font-size:14px;font-weight:600;color:var(--text);margin:9px 0 5px;}
+    .rte-area strong{color:var(--text);}.rte-area a{color:var(--accent3);}
+    .rte-area ul,.rte-area ol{padding-left:18px;color:var(--text2);}
+    .rte-area li{margin-bottom:4px;font-size:13px;}
+    .rte-area sup,.rte-area sub{font-size:.72em;color:var(--accent3);}`;
+  document.head.appendChild(s);
+});
+
+// ═══════════════════════════════════════
+// ROUTING
+// ═══════════════════════════════════════
+function showPage(id) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+function switchMode(mode, btn) {
+  document.querySelectorAll('.mode-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.form-sec').forEach(f=>f.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.getElementById('form-'+mode).classList.add('active');
+}
+
+// ═══════════════════════════════════════
+// LOGIN
+// ═══════════════════════════════════════
+function loginSiswa() {
+  const nama=document.getElementById('in-nama').value.trim();
+  const kelas=document.getElementById('in-kelas').value;
+  const presensi=document.getElementById('in-presensi').value.trim();
+  const guru=document.getElementById('in-guru-s').value.trim();
+  if(!nama||!kelas||!presensi||!guru){showToast('❌ Lengkapi semua data!','error');return;}
+  if(isNaN(presensi)||parseInt(presensi)<1){showToast('❌ Nomor presensi tidak valid!','error');return;}
+  currentUser={mode:'siswa',nama,kelas,presensi,guru};
+  const key=nama+'_'+kelas;
+  if(!studentProgress[key]) studentProgress[key]={steps:new Array(pblData.length).fill(false),quizScore:null,quizDone:false};
+  const existIdx=studentLog.findIndex(s=>s.key===key);
+  const entry={key,nama,kelas,presensi,guru,progress:studentProgress[key]};
+  if(existIdx>=0) studentLog[existIdx]=entry; else studentLog.push(entry);
+  saveLS('cc_students',studentLog);
+  document.getElementById('disp-nama').textContent=nama;
+  document.getElementById('disp-info').textContent=`Siswa · ${kelas} · No. ${presensi}`;
+  showPage('page-siswa');
+  renderBA('ba-siswa',false);
+  renderPBL('pbl-container',false);
+  renderQuiz();
+  renderDashboard();
+  showSP('dashboard');
+  showToast(`✅ Selamat datang, ${nama}!`,'success');
+}
+
+function loginGuru() {
+  const nama=document.getElementById('in-guru-nama').value.trim();
+  const pw=document.getElementById('in-guru-pw').value;
+  if(!nama){showToast('❌ Masukkan nama guru!','error');return;}
+  if(pw!=='guru123'){showToast('❌ Password salah!','error');return;}
+  currentUser={mode:'guru',nama};
+  document.getElementById('disp-guru').textContent=nama;
+  showPage('page-guru');
+  renderGuruDash();
+  renderEditBA();
+  renderEditLKPD();
+  renderEditAsesmen();
+  showGP('g-dash');
+  showToast(`✅ Selamat datang, ${nama}!`,'success');
+}
+
+function logout(){currentUser=null;showPage('page-landing');showToast('👋 Berhasil keluar','success');}
+
+// ═══════════════════════════════════════
+// STUDENT PAGES
+// ═══════════════════════════════════════
+function showSP(page) {
+  ['dashboard','pendahuluan','bahan-ajar','pembelajaran','asesmen'].forEach(p=>{const el=document.getElementById('sp-'+p);if(el)el.style.display='none';});
+  const el=document.getElementById('sp-'+page);if(el)el.style.display='block';
+  document.querySelectorAll('[data-sp]').forEach(b=>b.classList.toggle('active',b.dataset.sp===page));
+  if(page==='dashboard') renderDashboard();
+  if(page==='bahan-ajar') renderBA('ba-siswa',false);
+}
+
+function renderDashboard() {
+  if(!currentUser||currentUser.mode!=='siswa') return;
+  const key=currentUser.nama+'_'+currentUser.kelas;
+  const prog=studentProgress[key]; if(!prog) return;
+  const done=prog.steps.filter(Boolean).length, total=pblData.length;
+  const pct=Math.round(done/total*100);
+  document.getElementById('pct-val').textContent=pct+'%';
+  document.getElementById('st-selesai').textContent=done;
+  document.getElementById('st-total').textContent=total;
+  const el=document.getElementById('st-skor');
+  if(el) el.textContent=prog.quizDone?prog.quizScore+'%':'—';
+  const circ=2*Math.PI*44;
+  const c=document.getElementById('prog-circle');
+  if(c){c.style.strokeDasharray=circ;c.style.strokeDashoffset=circ-(pct/100)*circ;}
+  const stepsEl=document.getElementById('prog-steps');
+  if(stepsEl) stepsEl.innerHTML=pblData.map((s,i)=>`
+    <div class="prog-step">
+      <div class="sdot ${prog.steps[i]?'done':i===done?'active':''}"></div>
+      <span style="color:${prog.steps[i]?'var(--text)':'var(--text3)'};font-size:12px;">${s.phase}: ${s.title} ${prog.steps[i]?'✓':''}</span>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════
+// BAHAN AJAR
+// ═══════════════════════════════════════
+function renderBA(containerId, isPreview) {
+  const el=document.getElementById(containerId); if(!el) return;
+  el.innerHTML=baData.map((sec,i)=>`
+    <div class="ba-section" id="${containerId}-sec-${i}">
+      <div class="ba-hdr" onclick="toggleBA('${containerId}',${i})">
+        <span class="bai">${sec.icon}</span>
+        <h3>${sec.title}</h3>
+        <span class="bac">▼</span>
+      </div>
+      <div class="ba-body" id="${containerId}-body-${i}">${sec.html}</div>
+    </div>`).join('');
+  const fh=el.querySelector('.ba-hdr'), fb=el.querySelector('.ba-body');
+  if(fh) fh.classList.add('open');
+  if(fb) fb.classList.add('open');
+}
+
+function toggleBA(cid, i) {
+  const hdr=document.querySelector(`#${cid}-sec-${i} .ba-hdr`);
+  const body=document.getElementById(`${cid}-body-${i}`);
+  if(!hdr||!body) return;
+  hdr.classList.toggle('open'); body.classList.toggle('open');
+}
+
+// ═══════════════════════════════════════
+// PBL
+// ═══════════════════════════════════════
+function renderPBL(containerId, isPreview) {
+  const el=document.getElementById(containerId); if(!el) return;
+  const key=currentUser&&currentUser.mode==='siswa'?currentUser.nama+'_'+currentUser.kelas:null;
+  const prog=key?studentProgress[key]:null;
+  const pfx=containerId.replace(/[^a-z0-9]/gi,'');
+  el.innerHTML=pblData.map((step,i)=>{
+    const isDone=prog&&prog.steps[i];
+    const isActive=!isPreview&&prog&&!prog.steps[i]&&(i===0||prog.steps[i-1]);
+    return `<div class="pbl-step ${isDone?'done':''} ${isActive?'active':''}" id="${pfx}s${i}">
+      <div class="step-ind">${isDone?'✅':step.icon}</div>
+      <div class="step-content">
+        <div class="step-hdr" onclick="toggleStep('${pfx}',${i})">
+          <span class="step-phase">${step.phase}</span>
+          <span class="step-title-txt">${step.title}</span>
+          ${isDone?'<span class="done-badge">✅ Selesai</span>':''}
+          <span style="margin-left:auto;font-size:14px;color:var(--text3);" id="${pfx}chv${i}">▼</span>
+        </div>
+        <div class="step-body" id="${pfx}body${i}">
+          <div class="step-body-inner">
+            <p class="step-desc">${step.desc}</p>
+            ${step.lkpd}
+          </div>
+          ${!isPreview?`<div class="step-actions">
+            ${!isDone?`<button class="btn-complete" onclick="completeStep(${i})" ${!isActive?'disabled':''}>✅ Tandai Selesai</button>`
+              :'<span style="color:var(--green);font-size:12px;font-weight:600;">✅ Tahap ini selesai!</span>'}
+            <span style="font-size:11px;color:var(--text3);">${isDone?'':isActive?'Selesaikan untuk lanjut ke tahap berikutnya':'Selesaikan tahap sebelumnya terlebih dahulu'}</span>
+          </div>`:'<div class="step-actions"><span style="font-size:11px;color:var(--accent);">👁️ Mode Preview Guru</span></div>'}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  updatePBLLabel();
+}
+
+function toggleStep(pfx,i){
+  const body=document.getElementById(pfx+'body'+i), chv=document.getElementById(pfx+'chv'+i);
+  if(!body) return; body.classList.toggle('open'); if(chv) chv.textContent=body.classList.contains('open')?'▲':'▼';
+}
+
+function completeStep(i){
+  const key=currentUser.nama+'_'+currentUser.kelas;
+  studentProgress[key].steps[i]=true;
+  const le=studentLog.find(s=>s.key===key);
+  if(le){le.progress=studentProgress[key];saveLS('cc_students',studentLog);}
+  renderPBL('pbl-container',false); renderDashboard(); updatePBLLabel();
+  showToast(`🎉 ${pblData[i].phase} — ${pblData[i].title} selesai!`,'success');
+  if(studentProgress[key].steps.every(Boolean)) setTimeout(()=>showToast('🏆 Semua fase selesai! Kerjakan Asesmen!','success'),700);
+}
+
+function updatePBLLabel(){
+  const key=currentUser&&currentUser.mode==='siswa'?currentUser.nama+'_'+currentUser.kelas:null;
+  const prog=key?studentProgress[key]:null;
+  const el=document.getElementById('pbl-lbl');
+  if(el) el.textContent=`${prog?prog.steps.filter(Boolean).length:0}/${pblData.length}`;
+}
+
+// ═══════════════════════════════════════
+// UPLOAD KARYA
+// ═══════════════════════════════════════
+function handleDrag(e,entering){e.preventDefault();const z=document.getElementById('upload-zone');if(z)z.classList.toggle('drag',entering);}
+function handleDrop(e){e.preventDefault();const z=document.getElementById('upload-zone');if(z)z.classList.remove('drag');processFiles(Array.from(e.dataTransfer.files));}
+function handleKaryaSelect(e){processFiles(Array.from(e.target.files));}
+function processFiles(files){
+  const allowed=['image/png','image/jpeg','image/jpg','application/pdf'];
+  files.forEach(file=>{
+    if(!allowed.includes(file.type)){showToast('❌ Format tidak didukung','error');return;}
+    if(uploadedFiles.length>=3){showToast('❌ Maksimal 3 file','error');return;}
+    const reader=new FileReader();
+    reader.onload=e=>{
+      uploadedFiles.push({name:file.name,type:file.type,size:file.size,dataUrl:e.target.result,uploadedAt:new Date().toLocaleString('id-ID')});
+      saveKarya(); renderUploadList();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function saveKarya(){
+  if(!currentUser||currentUser.mode!=='siswa') return;
+  const key=currentUser.nama+'_'+currentUser.kelas;
+  karyaStore[key]={nama:currentUser.nama,kelas:currentUser.kelas,files:uploadedFiles,uploadedAt:today()};
+  saveLS('cc_karya',karyaStore);
+  const ok=document.getElementById('upload-ok'); if(ok) ok.style.display='flex';
+}
+function renderUploadList(){
+  const el=document.getElementById('uploaded-list'); if(!el) return;
+  el.innerHTML=uploadedFiles.map((f,i)=>`
+    <div class="uploaded-item">
+      ${f.type==='application/pdf'?'<div class="ui-icon">📄</div>':`<img class="ui-prev" src="${f.dataUrl}" alt="prev">`}
+      <div class="ui-info"><div class="ui-name">${f.name}</div><div class="ui-meta">${f.type==='application/pdf'?'PDF':'Gambar'} · ${(f.size/1024).toFixed(1)} KB</div></div>
+      <button class="btn-del" onclick="removeFile(${i})">🗑 Hapus</button>
+    </div>`).join('');
+}
+function removeFile(i){uploadedFiles.splice(i,1);saveKarya();renderUploadList();if(uploadedFiles.length===0){const ok=document.getElementById('upload-ok');if(ok)ok.style.display='none';}}
+
+// ═══════════════════════════════════════
+// QUIZ
+// ═══════════════════════════════════════
+function renderQuiz(){
+  const form=document.getElementById('quiz-form');if(!form)return;
+  form.innerHTML=quizData.map((q,i)=>`
+    <div class="quiz-q">
+      <div class="q-num">Soal ${i+1} dari ${quizData.length}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-opts">
+        ${q.options.map((opt,j)=>`<label class="q-opt" id="opt${i}${j}">
+          <input type="radio" name="q${i}" value="${j}">
+          <label>${String.fromCharCode(65+j)}. ${opt}</label>
+        </label>`).join('')}
+      </div>
+    </div>`).join('')+`<button class="btn-mulai" onclick="submitQuiz()" style="margin-top:8px;">Submit Asesmen →</button>`;
+}
+function submitQuiz(){
+  let score=0,allAnswered=true;
+  quizData.forEach((q,i)=>{
+    const sel=document.querySelector(`input[name="q${i}"]:checked`);
+    if(!sel){allAnswered=false;return;}
+    const val=parseInt(sel.value);
+    if(val===q.answer){score++;document.getElementById(`opt${i}${val}`).classList.add('correct');}
+    else{document.getElementById(`opt${i}${val}`).classList.add('incorrect');document.getElementById(`opt${i}${q.answer}`).classList.add('correct');}
+    document.querySelectorAll(`input[name="q${i}"]`).forEach(inp=>inp.disabled=true);
+  });
+  if(!allAnswered){showToast('❌ Jawab semua soal!','error');return;}
+  const pct=Math.round(score/quizData.length*100);
+  if(currentUser&&currentUser.mode==='siswa'){
+    const key=currentUser.nama+'_'+currentUser.kelas;
+    studentProgress[key].quizScore=pct;studentProgress[key].quizDone=true;
+    const le=studentLog.find(s=>s.key===key);
+    if(le){le.progress=studentProgress[key];saveLS('cc_students',studentLog);}
+    renderDashboard();
+  }
+  document.getElementById('quiz-score').textContent=`${score}/${quizData.length}`;
+  document.getElementById('quiz-fb').textContent=pct>=80?'🏆 Luar biasa! Pemahaman sangat baik!':pct>=60?'👍 Bagus! Pelajari kembali bagian yang masih kurang.':'💪 Terus semangat! Pelajari ulang materinya.';
+  document.getElementById('quiz-result').classList.add('show');
+  document.getElementById('quiz-result').scrollIntoView({behavior:'smooth'});
+}
+function resetQuiz(){document.getElementById('quiz-result').classList.remove('show');renderQuiz();}
+
+// ═══════════════════════════════════════
+// GURU PAGES
+// ═══════════════════════════════════════
+function showGP(page){
+  ['g-dash','g-siswa','g-karya','edit-ba','edit-lkpd','edit-quiz'].forEach(p=>{const el=document.getElementById(p);if(el)el.style.display='none';});
+  const el=document.getElementById(page);if(el)el.style.display='block';
+  document.querySelectorAll('[data-gp]').forEach(b=>b.classList.toggle('active',b.dataset.gp===page));
+  if(page==='g-dash') renderGuruDash();
+  if(page==='g-siswa') renderStudentTable();
+  if(page==='g-karya') renderKaryaGuru();
+  if(page==='edit-ba') renderEditBA();
+  if(page==='edit-lkpd') renderEditLKPD();
+  if(page==='edit-quiz') renderEditAsesmen();
+}
+function renderGuruDash(){
+  const f=studentLog.filter(s=>currentUser&&s.guru&&s.guru.toLowerCase()===currentUser.nama.toLowerCase());
+  document.getElementById('g-total').textContent=f.length;
+  document.getElementById('g-karya-ct').textContent=Object.keys(karyaStore).length;
+  if(f.length>0){
+    const avg=f.reduce((sum,s)=>{const d=s.progress?s.progress.steps.filter(Boolean).length:0;return sum+(d/pblData.length*100);},0)/f.length;
+    document.getElementById('g-avg').textContent=Math.round(avg)+'%';
+  }
+}
+function renderStudentTable(){
+  const f=studentLog.filter(s=>currentUser&&s.guru&&s.guru.toLowerCase()===currentUser.nama.toLowerCase());
+  const tbody=document.getElementById('s-tbody');
+  if(f.length===0){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:26px;">Belum ada siswa yang login dengan nama guru ini.</td></tr>';return;}
+  tbody.innerHTML=f.map((s,i)=>{
+    const prog=s.progress||{steps:[],quizScore:null};
+    const done=prog.steps.filter(Boolean).length;
+    const pct=Math.round(done/pblData.length*100);
+    const hasKarya=!!karyaStore[s.key];
+    return `<tr>
+      <td style="color:var(--text3)">${i+1}</td>
+      <td style="color:var(--text);font-weight:500;">${s.nama}</td>
+      <td>${s.kelas}</td>
+      <td style="text-align:center;font-weight:600;color:var(--accent3);">${s.presensi}</td>
+      <td><div style="display:flex;align-items:center;gap:7px;"><div class="pb-mini"><div class="pb-fill" style="width:${pct}%"></div></div><span style="font-size:11px;font-weight:600;color:var(--accent);min-width:30px">${pct}%</span></div></td>
+      <td>${prog.quizDone?`<span style="color:var(--green);font-weight:600;">${prog.quizScore}%</span>`:'<span style="color:var(--text3)">Belum</span>'}</td>
+      <td>${hasKarya?`<span style="color:var(--purple);font-weight:600;">✅ ${karyaStore[s.key].files?karyaStore[s.key].files.length:1} file</span>`:'<span style="color:var(--text3)">Belum</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+function renderKaryaGuru(){
+  const el=document.getElementById('karya-grid');if(!el)return;
+  const entries=Object.entries(karyaStore);
+  if(entries.length===0){el.innerHTML='<div class="card"><p style="font-size:13px;color:var(--text3);text-align:center;padding:24px;">Belum ada karya yang diunggah siswa.</p></div>';return;}
+  el.innerHTML=entries.map(([key,data])=>`
+    <div class="card mb5">
+      <div class="card-title">🎨 ${data.nama||key} <span style="font-size:13px;color:var(--text3);font-weight:400;">— ${data.kelas||''}</span></div>
+      <p style="font-size:12px;color:var(--text3);margin-bottom:14px;">Diunggah: ${data.uploadedAt||'—'}</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;">
+        ${(data.files||[]).map(f=>f.type==='application/pdf'
+          ?`<div style="background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:16px;display:flex;align-items:center;gap:10px;">
+              <span style="font-size:26px;">📄</span>
+              <div><div style="font-size:13px;font-weight:600;color:var(--text);">${f.name}</div><div style="font-size:11px;color:var(--text3);">PDF · ${(f.size/1024).toFixed(1)} KB</div></div>
+              <a href="${f.dataUrl}" download="${f.name}" style="margin-left:8px;padding:5px 11px;background:rgba(200,169,110,.1);border:1px solid rgba(200,169,110,.3);border-radius:6px;color:var(--accent);font-size:12px;font-weight:600;text-decoration:none;">⬇</a>
+            </div>`
+          :`<div><img src="${f.dataUrl}" alt="${f.name}" style="max-width:190px;max-height:150px;border-radius:9px;border:1px solid var(--border);object-fit:cover;display:block;">
+              <div style="font-size:11px;color:var(--text3);margin-top:4px;text-align:center;">${f.name}</div></div>`
+        ).join('')}
+      </div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════
+// PREVIEW MODE
+// ═══════════════════════════════════════
+function enterPreview(){
+  document.getElementById('pv-overlay').style.display='block';
+  renderBA('pv-ba-content',true);
+  renderPBL('pv-pbl-container',true);
+  renderPreviewQuiz();
+  showPV('pv-pbl');
+  showToast('👁️ Mode Preview aktif','success');
+}
+function exitPreview(){document.getElementById('pv-overlay').style.display='none';}
+function showPV(page){
+  ['pv-ba','pv-pbl','pv-quiz'].forEach(p=>{const el=document.getElementById(p);if(el)el.style.display='none';});
+  const el=document.getElementById(page);if(el)el.style.display='block';
+  document.querySelectorAll('[data-pv]').forEach(b=>b.classList.toggle('active',b.dataset.pv===page));
+  if(page==='pv-pbl') renderPBL('pv-pbl-container',true);
+  if(page==='pv-ba') renderBA('pv-ba-content',true);
+  if(page==='pv-quiz') renderPreviewQuiz();
+}
+function renderPreviewQuiz(){
+  const el=document.getElementById('pv-quiz-content');if(!el)return;
+  el.innerHTML=quizData.map((q,i)=>`
+    <div class="quiz-q">
+      <div class="q-num">Soal ${i+1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-opts">
+        ${q.options.map((opt,j)=>`<label class="q-opt" style="${j===q.answer?'border-color:var(--green);background:rgba(110,200,126,.08)':''}">
+          <input type="radio" disabled ${j===q.answer?'checked':''}>
+          <label>${String.fromCharCode(65+j)}. ${opt} ${j===q.answer?'✅':''}</label>
+        </label>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════
+// RTE HELPERS
+// ═══════════════════════════════════════
+function buildRTE(id, html, saveCB) {
+  return `<div class="rte-wrap" id="rte-${id}">
+    <div class="rte-toolbar">
+      <div class="rte-grp">
+        <select class="rte-sel" onchange="rteCmd('${id}','formatBlock',this.value);this.value='p'">
+          <option value="p">Paragraf</option><option value="h3">Heading</option><option value="pre">Kode</option>
+        </select>
+      </div>
+      <div class="rte-grp">
+        <button class="rte-btn" title="Bold" onclick="rteCmd('${id}','bold')"><b>B</b></button>
+        <button class="rte-btn" title="Italic" onclick="rteCmd('${id}','italic')"><i>I</i></button>
+        <button class="rte-btn" title="Underline" onclick="rteCmd('${id}','underline')"><u>U</u></button>
+      </div>
+      <div class="rte-grp">
+        <button class="rte-btn" title="Superscript" onclick="rteCmd('${id}','superscript')">X<sup style="font-size:8px">2</sup></button>
+        <button class="rte-btn" title="Subscript" onclick="rteCmd('${id}','subscript')">X<sub style="font-size:8px">2</sub></button>
+      </div>
+      <div class="rte-grp">
+        <button class="rte-btn" title="Rata Kiri" onclick="rteCmd('${id}','justifyLeft')"><svg viewBox="0 0 16 16"><line x1="1" y1="4" x2="15" y2="4"/><line x1="1" y1="8" x2="10" y2="8"/><line x1="1" y1="12" x2="12" y2="12"/></svg></button>
+        <button class="rte-btn" title="Tengah" onclick="rteCmd('${id}','justifyCenter')"><svg viewBox="0 0 16 16"><line x1="1" y1="4" x2="15" y2="4"/><line x1="3" y1="8" x2="13" y2="8"/><line x1="2" y1="12" x2="14" y2="12"/></svg></button>
+        <button class="rte-btn" title="Rata Kanan" onclick="rteCmd('${id}','justifyRight')"><svg viewBox="0 0 16 16"><line x1="1" y1="4" x2="15" y2="4"/><line x1="5" y1="8" x2="15" y2="8"/><line x1="3" y1="12" x2="15" y2="12"/></svg></button>
+        <button class="rte-btn" title="Justify" onclick="rteCmd('${id}','justifyFull')"><svg viewBox="0 0 16 16"><line x1="1" y1="4" x2="15" y2="4"/><line x1="1" y1="8" x2="15" y2="8"/><line x1="1" y1="12" x2="15" y2="12"/></svg></button>
+      </div>
+      <div class="rte-grp">
+        <button class="rte-btn" onclick="rteCmd('${id}','insertUnorderedList')"><svg viewBox="0 0 16 16"><circle cx="2" cy="5" r="1.5" fill="currentColor"/><line x1="5" y1="5" x2="15" y2="5"/><circle cx="2" cy="11" r="1.5" fill="currentColor"/><line x1="5" y1="11" x2="15" y2="11"/></svg></button>
+        <button class="rte-btn" onclick="rteCmd('${id}','insertOrderedList')"><svg viewBox="0 0 16 16"><text x="0" y="7" font-size="7" fill="currentColor">1.</text><line x1="7" y1="5" x2="15" y2="5"/><text x="0" y="13" font-size="7" fill="currentColor">2.</text><line x1="7" y1="11" x2="15" y2="11"/></svg></button>
+      </div>
+      <div class="rte-grp">
+        <button class="rte-img-btn" onclick="triggerRteImg('${id}')">🖼️ Gambar</button>
+      </div>
+      <div class="rte-grp">
+        <button class="rte-btn" title="Hapus Format" onclick="rteCmd('${id}','removeFormat')" style="font-size:9px;width:auto;padding:0 6px;">Tx</button>
+      </div>
+    </div>
+    <div class="rte-area" id="rte-area-${id}" contenteditable="true" spellcheck="false" onfocus="activeRteId='${id}'">${html}</div>
+    <div class="rte-footer">
+      <button class="btn-sec" onclick="${saveCB}_cancel()">Batal</button>
+      <button class="btn-save" onclick="${saveCB}('${id}')">💾 Simpan</button>
+    </div>
+  </div>`;
+}
+function rteCmd(id,cmd,val){const a=document.getElementById('rte-area-'+id);if(a)a.focus();document.execCommand(cmd,false,val||null);}
+function triggerRteImg(id){activeRteId=id;document.getElementById('rte-img-input').click();}
+function handleRteImg(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{const a=document.getElementById('rte-area-'+activeRteId);if(a){a.focus();document.execCommand('insertHTML',false,`<img src="${ev.target.result}" style="max-width:100%;border-radius:8px;margin:8px 0;" alt="gambar">`);}};
+  reader.readAsDataURL(file);e.target.value='';
+}
+
+// ═══════════════════════════════════════
+// EDIT BAHAN AJAR (dengan tambah/hapus)
+// ═══════════════════════════════════════
+function renderEditBA(){
+  const tabsEl=document.getElementById('edit-ba-tabs');if(!tabsEl)return;
+  tabsEl.innerHTML=baData.map((s,i)=>`<button class="edit-tab ${i===editBAStep?'active':''}" onclick="selectEditBA(${i})">${s.icon} ${s.title}</button>`).join('');
+  const delBtn=document.getElementById('btn-del-ba');
+  if(delBtn) delBtn.style.display=baData.length>1?'inline-flex':'none';
+  const sec=baData[editBAStep];
+  document.getElementById('edit-ba-content').innerHTML=buildRTE('ba',sec.html,'saveBA');
+}
+function selectEditBA(i){editBAStep=i;renderEditBA();}
+function saveBA(rteId){
+  const a=document.getElementById('rte-area-'+rteId);if(!a)return;
+  baData[editBAStep].html=a.innerHTML;
+  saveLS('cc_ba',baData);
+  showToast('💾 Bahan Ajar disimpan!','success');
+}
+function saveBA_cancel(){renderEditBA();}
+
+function openAddBAModal(){
+  document.getElementById('new-ba-icon').value='🧪';
+  document.getElementById('new-ba-title').value='';
+  document.getElementById('new-ba-html').value='';
+  openModal('modal-add-ba');
+}
+function confirmAddBA(){
+  const icon=document.getElementById('new-ba-icon').value.trim()||'📄';
+  const title=document.getElementById('new-ba-title').value.trim();
+  const html=document.getElementById('new-ba-html').value.trim();
+  if(!title){showToast('❌ Masukkan judul topik!','error');return;}
+  baData.push({id:'ba_'+Date.now(),icon,title,html:html?`<div class="mat-block"><p>${html}</p></div>`:''});
+  saveLS('cc_ba',baData);
+  editBAStep=baData.length-1;
+  closeModal('modal-add-ba');
+  renderEditBA();
+  showToast(`✅ Topik "${title}" ditambahkan!`,'success');
+}
+function deleteBASection(){
+  if(baData.length<=1){showToast('❌ Minimal harus ada 1 topik!','error');return;}
+  if(!confirm(`Hapus topik "${baData[editBAStep].title}"? Tindakan ini tidak dapat dibatalkan.`)) return;
+  baData.splice(editBAStep,1);
+  editBAStep=Math.max(0,editBAStep-1);
+  saveLS('cc_ba',baData);
+  renderEditBA();
+  showToast('🗑 Topik dihapus!','success');
+}
+
+// ═══════════════════════════════════════
+// EDIT LKPD & AKTIVITAS
+// ═══════════════════════════════════════
+function renderEditLKPD(){
+  const tabsEl=document.getElementById('edit-lkpd-tabs');if(!tabsEl)return;
+  tabsEl.innerHTML=pblData.map((s,i)=>`<button class="edit-tab ${i===editLKPDStep?'active':''}" onclick="selectEditLKPD(${i})">${s.phase}</button>`).join('');
+  const step=pblData[editLKPDStep];
+  document.getElementById('edit-lkpd-content').innerHTML=`
+    <div class="card mb4">
+      <div class="card-title" style="font-size:15px;">⚙️ Pengaturan Fase</div>
+      <div class="g2">
+        <div class="form-group"><label class="form-label">Label Fase</label><input class="form-input" id="el-phase" value="${step.phase}"></div>
+        <div class="form-group"><label class="form-label">Ikon</label><input class="form-input" id="el-icon" value="${step.icon}" style="max-width:80px"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Judul Tahap</label><input class="form-input" id="el-title" value="${step.title.replace(/"/g,'&quot;')}"></div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">Deskripsi</label><textarea class="form-input" id="el-desc" style="min-height:80px;resize:vertical">${step.desc}</textarea></div>
+      <div style="display:flex;justify-content:flex-end;margin-top:14px;">
+        <button class="btn-save" onclick="saveLKPDMeta(${editLKPDStep})">💾 Simpan Pengaturan</button>
+      </div>
+    </div>
+    <div><div class="card-title" style="font-size:15px;margin-bottom:12px;">📋 Edit Isi LKPD</div>
+    ${buildRTE('lkpd',step.lkpd,'saveLKPD')}</div>`;
+}
+function selectEditLKPD(i){editLKPDStep=i;renderEditLKPD();}
+function saveLKPDMeta(i){
+  pblData[i].phase=document.getElementById('el-phase').value;
+  pblData[i].icon=document.getElementById('el-icon').value;
+  pblData[i].title=document.getElementById('el-title').value;
+  pblData[i].desc=document.getElementById('el-desc').value;
+  saveLS('cc_pbl',pblData);
+  showToast('💾 Pengaturan fase disimpan!','success');
+  renderEditLKPD();
+}
+function saveLKPD(rteId){
+  const a=document.getElementById('rte-area-'+rteId);if(!a)return;
+  pblData[editLKPDStep].lkpd=a.innerHTML;
+  saveLS('cc_pbl',pblData);
+  showToast('💾 LKPD disimpan!','success');
+}
+function saveLKPD_cancel(){renderEditLKPD();}
+
+// ═══════════════════════════════════════
+// EDIT ASESMEN (dengan tambah/hapus)
+// ═══════════════════════════════════════
+function renderEditAsesmen(){
+  const el=document.getElementById('edit-asesmen-content');if(!el)return;
+  el.innerHTML=quizData.map((q,i)=>`
+    <div class="card mb4" id="quiz-card-${i}">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;">Soal ${i+1}</span>
+        <button class="btn-danger" onclick="deleteQuestion(${i})" style="padding:5px 10px;font-size:11px;">🗑 Hapus</button>
+      </div>
+      <div class="form-group"><label class="form-label">Pertanyaan (HTML diizinkan)</label>
+        <textarea class="form-input" id="eq-${i}" style="min-height:52px;resize:vertical">${q.q}</textarea></div>
+      ${q.options.map((opt,j)=>`
+        <div class="form-group" style="margin-bottom:8px;">
+          <label class="form-label">Opsi ${String.fromCharCode(65+j)} ${j===q.answer?'✅ Kunci Jawaban':''}</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input class="form-input" id="eo-${i}-${j}" value="${opt.replace(/"/g,'&quot;')}" style="flex:1">
+            <button class="btn-sec" style="padding:7px 11px;font-size:11px;white-space:nowrap;" onclick="setAns(${i},${j})">${j===q.answer?'✅ Kunci':'Set Kunci'}</button>
+          </div>
+        </div>`).join('')}
+    </div>`).join('')+`<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px;">
+      <button class="btn-save" onclick="saveAsesmen()">💾 Simpan Semua</button>
+    </div>`;
+}
+function addQuestion(){
+  // Save current edits first
+  saveAsesmen(true);
+  quizData.push({q:'Tulis pertanyaan baru di sini...',options:['Opsi A','Opsi B','Opsi C','Opsi D'],answer:0});
+  saveLS('cc_quiz',quizData);
+  renderEditAsesmen();
+  // Scroll to new question
+  setTimeout(()=>{const cards=document.querySelectorAll('[id^="quiz-card-"]');const last=cards[cards.length-1];if(last)last.scrollIntoView({behavior:'smooth'});},100);
+  showToast(`➕ Soal baru ditambahkan (Soal ${quizData.length})!`,'success');
+}
+function deleteQuestion(i){
+  if(quizData.length<=1){showToast('❌ Minimal harus ada 1 soal!','error');return;}
+  if(!confirm(`Hapus Soal ${i+1}? Tindakan ini tidak dapat dibatalkan.`)) return;
+  quizData.splice(i,1);
+  saveLS('cc_quiz',quizData);
+  renderEditAsesmen();
+  showToast('🗑 Soal dihapus!','success');
+}
+function setAns(qi,ai){quizData[qi].answer=ai;renderEditAsesmen();showToast(`Kunci soal ${qi+1} → Opsi ${String.fromCharCode(65+ai)}`,'success');}
+function saveAsesmen(silent){
+  quizData.forEach((q,i)=>{
+    const qEl=document.getElementById(`eq-${i}`);if(qEl)q.q=qEl.value;
+    q.options.forEach((_,j)=>{const oEl=document.getElementById(`eo-${i}-${j}`);if(oEl)q.options[j]=oEl.value;});
+  });
+  saveLS('cc_quiz',quizData);
+  if(!silent) showToast('💾 Asesmen disimpan!','success');
+}
+
+// ═══════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════
+function openModal(id){const el=document.getElementById(id);if(el)el.classList.add('open');}
+function closeModal(id){const el=document.getElementById(id);if(el)el.classList.remove('open');}
+
+// ═══════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════
+let toastTimer;
+function showToast(msg,type='success'){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.className=`toast ${type} show`;
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),3200);
+}
+</script>
+</body>
+</html>
